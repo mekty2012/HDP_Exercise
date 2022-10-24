@@ -1,0 +1,35 @@
+\documentclass[a4paper]{article}
+\usepackage{amsmath,amssymb,amsthm,tikz,hyperref}
+
+\newtheorem{exercise}{Exercise}[subsection]
+
+\newcommand*{\E}{\mathbb{E}}
+\newcommand*{\R}{\mathbb{R}}
+\newcommand*{\cN}{\mathcal{N}}
+\newcommand*{\Var}{\mathrm{Var}}
+\newcommand*{\Cov}{\mathrm{Cov}}
+\newcommand*{\esssup}{\mathrm{ess}\,\sup}
+
+\renewcommand{\theenumi}{(\alph{enumi})}
+\makeatletter
+
+\newenvironment{customExercise}[1]
+ {\count@\c@exercise
+ \global\c@exercise#1 %
+   \global\advance\c@exercise\m@ne
+   \exercise}
+  {\endexercise
+  \global\c@exercise\count@}
+
+\title{Preliminaries on Random Variables}
+\author{Taeyoung Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\setcounter{section}{1}
+
+
+
+\end{document}
