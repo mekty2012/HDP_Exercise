@@ -1,0 +1,127 @@
+\documentclass[a4paper]{article}
+\usepackage{amsmath,amssymb,amsthm,tikz,hyperref}
+
+\newtheorem{exercise}{Exercise}[subsection]
+
+\newcommand*{\E}{\mathbb{E}}
+\newcommand*{\R}{\mathbb{R}}
+\newcommand*{\cN}{\mathcal{N}}
+
+\renewcommand{\theenumi}{(\alph{enumi})}
+\makeatletter
+
+\newenvironment{customExercise}[1]
+ {\count@\c@exercise
+ \global\c@exercise#1 %
+   \global\advance\c@exercise\m@ne
+   \exercise}
+  {\endexercise
+  \global\c@exercise\count@}
+
+\title{Appetizer}
+\author{Taeyoung Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\setcounter{section}{0}
+\setcounter{subsection}{0}
+
+
+\begin{customExercise}{3}
+  Check the following variance identities.
+  \begin{enumerate}
+    \item Let $Z_1, \ldots, Z_k$ be independent mean-zero random vectors in $\R^n$. Show that
+    \[\E\left\| \sum_{j=1}^k Z_j \right\|_2^2 = \sum_{j=1}^k \E\left\| Z_j \right\|_2^2.\]
+    \item Let $Z$ be a random vector in $\R^n$. Show that
+    \[\E\|Z - \E Z\|_2^2 = \E \|Z\|_2^2 - \|\E Z\|_2^2.\]
+  \end{enumerate}
+\end{customExercise}
+\begin{proof}
+  \begin{enumerate}
+    \item 
+    \begin{align*}
+      \E \left\|\sum_{j=1}^k Z_j\right\|_2^2 
+      &= \E \left[ \sum_{d=1}^n \left( \sum_{j=1}^k Z_{j,d} \right)^2 \right] &\text{By def.}
+      \\
+      &= \sum_{d=1}^n \E \left[ \left( \sum_{j=1}^k Z_{j,d} \right)^2 \right] &\text{By lin. of exp.}
+      \\
+      &= \sum_{d=1}^n \E \left[ \sum_{j=1}^k Z_{j,d}^2 + \sum_{\substack{j,l = 1\\j \neq l}}^k Z_{j,d} Z_{l,d} \right] &\text{Unroll square}
+      \\
+      &= \sum_{d=1}^n \E \left[ \sum_{j=1}^k Z_{j,d}^2 \right] &\text{Indep. + Zero Mean}
+      \\
+      &= \sum_{j=1}^k \E \left[ \sum_{d=1}^n Z_{j,d}^2 \right] &\text{By lin. of exp.}
+      \\
+      &= \sum_{j=1}^k \E \left\| Z_j \right\|^2. &\text{By def.}
+    \end{align*}
+    \item For conveneice, denote $\mu = \E Z$.
+    \begin{align*}
+      \E \|Z - \mu\|_2^2 &= \E \left[ \sum_{d=1}^n (Z_d - \mu_d)^2 \right] &\text{By def.}
+      \\
+      &= \sum_{d=1}^n \E \left[ (Z_d - \mu_d)^2 \right] &\text{By lin. of exp.}
+      \\
+      &= \sum_{d=1}^n \E \left[ Z_d^2 - 2 Z_d \mu_d + \mu_d^2 \right] &\text{Unroll square}
+      \\
+      &= \sum_{d=1}^n \E \left[ Z_d^2 - \mu_d^2 \right] &\text{Use } \E Z_d = \mu_d
+      \\
+      &= \E\|Z\|_2^2 - \|\E Z\|_2^2.
+    \end{align*}
+  \end{enumerate}
+\end{proof}
+
+\begin{customExercise}{5}
+  Prove the inequalities
+  \[\left(\frac{n}{m}\right)^m \le \binom{n}{m} \le \sum_{k=0}^m \binom{n}{k} \le \left( \frac{en}{m} \right)^m\]
+  for all $m \in [1, n]$.
+\end{customExercise}
+\begin{proof}
+  We can rewrite the first inequality as
+  \[
+    \frac{m}{m} \cdot \frac{m-1}{m} \cdot \ldots \cdot \frac{1}{m} \le \frac{n}{n} \cdot \frac{n-1}{n} \cdot \ldots \cdot \frac{n-m+1}{n}
+  \]
+  We can pair them by order, and can see that all the terms in the RHS are larger than or equal to terms in LHS. So the first inequality holds.
+
+  Second inequality is immediate, since
+  \[\sum_{k=0}^m \binom{n}{k} = \sum_{k=0}^{m-1} \binom{n}{k} + \binom{n}{m}.\]
+
+  For the final inequality, we can show it as
+  \begin{align*}
+    \sum_{k=0}^m \binom{n}{k} 
+    &= \sum_{k=0}^m \frac{n \cdot (n-1) \cdot \ldots \cdot (n-k+1)}{k!} 
+    \\
+    &\le \sum_{k=0}^m \frac{n^k}{k!}
+    \\
+    &= \sum_{k=0}^m \frac{m^k}{k!} \left( \frac{n}{m} \right)^k
+    \\
+    &\le \left(\frac{n}{m}\right)^m \sum_{k=0}^m \frac{m^k}{k!}
+    \\
+    &\le \left(\frac{n}{m}\right)^m \sum_{k=0}^\infty \frac{m^k}{k!}
+    \\
+    &= \left( \frac{en}{m} \right)^m.
+  \end{align*}
+\end{proof}
+
+\begin{customExercise}{6}
+  Check that, in Corollary 0.0.4, 
+  \[
+    (C+C \epsilon^2 N)^{\lceil 1/\epsilon^2 \rceil}
+  \]
+  Euclidean balls suffice. Here $C$ is a suitable absolute constant.
+\end{customExercise}
+\begin{proof}
+  By simple combinatoric argument, we can explicitly compute that 
+  \[|\cN| = \binom{N + k - 1}{k}.\]
+  And by our previous exercise, we can bound this value by
+  \[|\cN| \le \left( \frac{e(N+k-1)}{k} \right)^k.\]
+  Using the fact that $k = \lceil 1/\epsilon^2 \rceil$
+  \begin{align*}
+    |\cN| 
+    &\le \left( e \epsilon^2 N + (k-1)\epsilon^2 \right)^{\lceil 1/\epsilon^2 \rceil} 
+    \\
+    &\le \left( e \epsilon^2 N ((1 + 1/\epsilon^2) - 1)\epsilon^2 \right)^{\lceil 1/\epsilon^2 \rceil} 
+    \\
+    &= \left( e \epsilon^2 N + 1 \right)^{\lceil 1/\epsilon^2 \rceil}.
+  \end{align*}
+\end{proof}
+\end{document}
