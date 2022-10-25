@@ -11,6 +11,7 @@
 \newcommand*{\Cov}{\mathrm{Cov}}
 \newcommand*{\esssup}{\mathrm{ess}\,\sup}
 \newcommand*{\ind}[1]{\mathbbm{1}_{[{#1}]}}
+\newcommand*{\defeq}{\stackrel{\mathrm{def}}{=}}
 
 \renewcommand{\theenumi}{(\alph{enumi})}
 \makeatletter
@@ -33,5 +34,54 @@
 \setcounter{section}{2}
 \setcounter{subsection}{1}
 
+\begin{customExercise}{4}
+  Let $g \sim \cN(0, 1)$. Show that, for all $t \ge 1$, we have
+  \[\E g^2 \ind{g > t} = t \frac{1}{\sqrt{2\pi}} e^{-t^2/2} + P\left( g > t \right) \le \left( t + \frac{1}{t}\right) \frac{1}{\sqrt{2\pi}} e^{-t^2/2}.\]
+\end{customExercise}
+\begin{proof}
+  We use the following equality
+  \[
+    x^2 e^{-x^2/2} = e^{-x^2/2} - \frac{d}{dx} \left( x e^{-x^2/2} \right)
+  \]
+  which gives
+  \begin{align*}
+    &\E g^2 \ind{g > t} 
+    \\
+    = &\int_t^\infty g^2 e^{-g^2 / 2} dg 
+    \\
+    = &\int_t^\infty \left(e^{-g^2/2} - \frac{d}{dg} \left( x e^{-x^2/2} \right) \right)dg
+    \\
+    = &P(g > t) - \left(\lim_{x \to \infty} \left(x e^{-x^2/2}\right) - t e^{-t^2/2}\right)
+    \\
+    = &P(g > t) + t e^{-t^2/2}.
+  \end{align*}
+  The inequality directly follows from Proposition 2.1.3.
+\end{proof}
+
+\setcounter{subsection}{2}
+
+\begin{customExercise}{3}
+  Show that
+  \[\cosh(x) = \frac{e^x + e^{-x}}{2} \le \exp(x^2/2)\]
+  for all $x \in \R$.  
+\end{customExercise}
+\begin{proof}
+  Take logarithm to both side, and subtract LHS from RHS. This gives
+  \[x^2/2 - \log (\cosh(x))\]
+  which is zero at $x=0$.
+  Now differentiate this, which gives
+  \[x - \tanh(x)\]
+  so it is enough to show that 
+  \[\tanh(x) \begin{cases}
+    \le x & x > 0\\
+    \ge x & x < 0
+  \end{cases}\]
+  Showing the first condition shows the second, since $\tanh$ is symmetric at zero.
+  Now differentiate $\tanh$, we have $\tanh'(x) = 1 - \tanh^2(x)$.
+  Then for $x > 0$
+  \[\tanh(x) = \int_0^x (1 - \tanh^2(t)) dt \le \int_0^x 1 dt = x\]
+  finishing the proof. 
+  
+\end{proof}
 
 \end{document}
