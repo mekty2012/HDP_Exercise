@@ -1,0 +1,37 @@
+\documentclass[a4paper]{article}
+\usepackage{amsmath,amssymb,amsthm,tikz,hyperref}
+\usepackage{bbm}
+
+\newtheorem{exercise}{Exercise}[subsection]
+
+\newcommand*{\E}{\mathbb{E}}
+\newcommand*{\R}{\mathbb{R}}
+\newcommand*{\cN}{\mathcal{N}}
+\newcommand*{\Var}{\mathrm{Var}}
+\newcommand*{\Cov}{\mathrm{Cov}}
+\newcommand*{\esssup}{\mathrm{ess}\,\sup}
+\newcommand*{\ind}[1]{\mathbbm{1}_{[{#1}]}}
+
+\renewcommand{\theenumi}{(\alph{enumi})}
+\makeatletter
+
+\newenvironment{customExercise}[1]
+ {\count@\c@exercise
+ \global\c@exercise#1 %
+   \global\advance\c@exercise\m@ne
+   \exercise}
+  {\endexercise
+  \global\c@exercise\count@}
+
+\title{Concentration of Sums of Independent Random Variables}
+\author{Taeyoung Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\setcounter{section}{2}
+\setcounter{subsection}{1}
+
+
+\end{document}
