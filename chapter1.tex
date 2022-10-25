@@ -1,5 +1,6 @@
 \documentclass[a4paper]{article}
 \usepackage{amsmath,amssymb,amsthm,tikz,hyperref}
+\usepackage{bbm}
 
 \newtheorem{exercise}{Exercise}[subsection]
 
@@ -9,6 +10,7 @@
 \newcommand*{\Var}{\mathrm{Var}}
 \newcommand*{\Cov}{\mathrm{Cov}}
 \newcommand*{\esssup}{\mathrm{ess}\,\sup}
+\newcommand*{\ind}[1]{\mathbbm{1}_{[{#1}]}}
 
 \renewcommand{\theenumi}{(\alph{enumi})}
 \makeatletter
@@ -29,7 +31,86 @@
 \maketitle
 
 \setcounter{section}{1}
+\setcounter{subsection}{2}
 
+\begin{customExercise}{2}
+  Prove the following extension of Lemma 1.2.1, which is valid for any random variable $X$:
+  \[
+    \E X = \int_0^\infty P\left(X > t\right) dt - \int_{-\infty}^0 P(X < t) dt.
+  \]
+\end{customExercise}
+\begin{proof}
+  We can deduce the identity as following.
+  \begin{align*}
+    &\E X
+    \\
+    = & \E \left[ \ind{X \ge 0}X + \ind{X < 0}X\right]
+    \\
+    = &\E \left[ \ind{X \ge 0}X \right] - \E \left[ \ind{-X > 0} (-X) \right]
+    \\
+    = &\int_0^\infty P\left( \ind{X \ge 0} X > t \right) dt - \int_0^\infty P\left( \int{-X > 0} (-X) > t \right) dt
+    \\
+    = &\int_0^\infty P\left( X > t \right) dt - \int_0^\infty P\left( X < -t \right) dt
+    \\
+    = &\int_0^\infty P\left( X > t \right) dt - \int_{-\infty}^0 P\left( X < t \right) dt.
+  \end{align*}
+\end{proof}
 
+\begin{customExercise}{3}
+  Let $X$ be a random variable and $p \in (0, \infty)$. Show that
+  \[\E |X|^p = \int_0^\infty p t^{p-1} P\left( |X| > t\right) dt\]
+  whenever the right-hand side is finite.
+\end{customExercise}
+\begin{proof}
+  We can deduce similar identity, 
+  \[x^p = \int_0^x p t^{p-1} dt = \int_0^\infty p t^{p-1} \ind{t < x} dt.\]
+  Plugging in this, we obtatin
+  \begin{align*}
+    \E |X|^p 
+    &= \E \int_0^\infty p t^{p-1} \ind{t < |X|} dt 
+    \\
+    &= \int_0^\infty p t^{p-1} \E \left[\ind{t < |X|}\right] dt
+    \\
+    &= \int_0^\infty p t^{p-1} P(t < |X|) dt
+  \end{align*}
+  where we used the Fubini-Tonelli theorem using that the integrand is nonnegative.
+\end{proof}
+
+\begin{customExercise}{6}
+  Deduce Chebyshev's inequality by squaring both sides of the bound $|X-\mu| \ge t$ and applying Markov's inequality.
+\end{customExercise}
+\begin{proof}
+  \begin{align*}
+    &P \left( |X= \mu| \ge t \right)
+    \\
+    = &P \left( |X-\mu|^2 \ge t^2 \right)
+    \\
+    \le &\frac{\E|X-\mu|^2}{t^2}
+    \\
+    = &\frac{\sigma^2}{t^2}.
+  \end{align*}
+\end{proof}
+
+\setcounter{subsection}{3}
+
+\begin{customExercise}{3}
+  Let $X_1, X_2, \ldots$ be a sequence of i.i.d. random variables with mean $\mu$ and finite variance. Show that
+  \[\E \left| \frac{1}{N} \sum_{i=1}^N X_i - \mu \right| = O\left( \frac{1}{\sqrt{N}} \right)\]
+  as $N \to \infty$.
+\end{customExercise}
+\begin{proof}
+  \begin{align*}
+    &\left( \E \left| \frac{1}{N} \sum_{i=1}^N X_i - \mu \right| \right)^2
+    \\
+    \le &\E \left| \frac{1}{N} \sum_{i=1}^N X_i - \mu \right|^2
+    \\
+    = &\Var\left( \frac{1}{N} \sum_{i=1}^N X_i \right)
+    \\
+    = & \frac{\sigma^2}{N}
+  \end{align*}
+  where $\sigma^2$ is variance of $X_i$.
+  So we have
+  \[\E \left| \frac{1}{N} \sum_{i=1}^N X_i - \mu \right| = O(1/\sqrt{N}).\]
+\end{proof}
 
 \end{document}
