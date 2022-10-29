@@ -84,4 +84,302 @@
   
 \end{proof}
 
+\begin{customExercise}{7}
+  Prove Theorem 2.2.6, possibly with some absolute constant instead of 2 in the tail.
+\end{customExercise}
+\begin{proof}
+  We will first assume that $\E X_i = 0$ for all $i$, since it does not change both sides.
+
+  Let's take similar step to the Theorem 2.2.2, multiplying a constant $\lambda > 0$ and exponenting both side.
+  \begin{align*}
+    P\left( \sum_{i=1}^N X_i \ge t \right) 
+    &= P \left( \lambda \sum_{i=1}^N X_i \ge \lambda t\right)
+    \\
+    &= P \left( \exp\left(\lambda \sum_{i=1}^N X_i\right) \ge \exp(\lambda t) \right).
+  \end{align*}
+  By the Markov inequality, the probability we consider can be bounded, where we used the independency of the r.v.s $X_i$:
+  \[
+    P \left( \prod_{i=1}^N \exp(\lambda X_i) \ge \exp(\lambda t) \right) \le e^{-\lambda t} \prod_{i=1}^N \E \exp(\lambda X_i).
+  \]
+  Now, we need to prove similar version of Exercise 2.2.3, that
+  \[
+    \E \exp(\lambda X_i) \le \exp\left( \frac{\lambda^2 (M_i - m_i)^2}{8} \right).
+  \]
+  We first note that, every $X_i$ is the interpolator of $(m_i, M_i)$. 
+  We will write it by $X_i = Y_i m_i + (1 - Y_i) M_i$ with $Y_i \in [0, 1]$.
+  Since the $\exp(\lambda x)$ is the convex function, we can apply the Jensen's inequality, giving
+  \[
+    \exp(\lambda X_i) = \exp(\lambda (Y_i m_i + (1 - Y_i) M_i)) \le Y_i \exp(\lambda m_i) + (1 - Y_i) \exp(\lambda M_i)
+  \]
+  Then taking the expectation gives
+  \[
+    \E \exp(\lambda X_i) \le \frac{M_i}{M_i - m_i} \exp(\lambda m_i) - \frac{m_i}{M_i - m_i} \exp(\lambda M_i)
+  \]
+  From our required bound, we can motivate to rewrite this as function of $t = \lambda (M_i - m_i)$:
+  \begin{align*}
+    &\log \left( \frac{M_i}{M_i - m_i} \exp(\lambda m_i) - \frac{m_i}{M_i - m_i} \exp(\lambda M_i) \right)
+    \\
+    = &\lambda m_i + \log \left( \frac{M_i}{M_i - m_i} - \frac{m_i}{M_i - m_i} \exp(\lambda (M_i - m_i)) \right)
+    \\
+    = &\frac{m_i t}{M_i - m_i} + \log \left( 1 + \frac{m_i (1 - e^t)}{M_i - m_i} \right) =: g(t)
+  \end{align*}
+  Now by Taylor's theorem, there is $\epsilon \in (0, t)$ that
+  \[g(t) = g(0) + t g'(0) + \frac{t^2}{2} g''(\epsilon).\]
+  Then, we have
+  \begin{align*}
+    g(0) &= 0,
+    \\
+    g'(0) &= 0,
+    \\
+    g''(t) &= - \frac{M_i m_i e^t}{(M_i - m_i e^t)^2}.
+  \end{align*}
+  Since we have $m_i \le 0 \le M_i$, we can apply the AMGM inequality to dividend, giving
+  \[
+    \frac{(-m_i e^t) (M_i)}{(M_i - m_i e^t)^2} \le \frac{(M_i - m_i e^t)^2}{4 (M_i - m_i e^t)^2} = \frac{1}{4}.
+  \]
+  So, we can bound 
+  \[
+    \E \exp(\lambda X_i) \le \exp\left( \frac{\lambda^2 (M_i - m_i)^2}{8} \right)
+  \]
+  resulting 
+  \[
+    p \le \exp\left( -\lambda t + \sum_{i=1}^N \frac{\lambda^2 (M_i - m_i)^2}{8} \right)
+  \]
+  By letting $\lambda = \frac{2 t}{\sum_{i=1}^N (M_i - m_i)^2}$, we have
+  \[
+    p \le \exp \left( -\frac{2t^2}{\sum_{i=1}^N (M_i - m_i)^2} \right).
+  \]
+\end{proof}
+
+\begin{customExercise}{8}
+  Imagine we have an algorithm for solving some decision problem. Suppose that the algorithm makes a decision at random and returns the correct answer with $1/2+\delta$. To improve the performance, we run the algorithm $N$ times and take the majority vote. Show that, for any $\epsilon \in (0, 1)$, the answer is correct with probability $1-\epsilon$, as long as $N \ge (1/2) \delta^{-2} \log (\epsilon^{-1})$.
+\end{customExercise}
+\begin{proof}
+  Let's assume that the algorithm outputs 1 or -1, where the correct answer is 1. 
+  Then $\E X = 2\delta$, so the probability of predicting false is
+  \begin{align*}
+    &P \left( \sum_{i=1}^N X_i \le 0 \right)
+    \\
+    = &P \left( \sum_{i=1}^N (X_i - \E X_i) \le - N \E X_i \right)
+    \\
+    \le &\exp\left( - \frac{ N^2 \delta^2}{N} \right)
+  \end{align*}
+  where we applied the Theorem 2.2.6 in the last inequality.
+
+  For this bound to hold, we need
+  \[\exp \left( -2N \delta^2 \right) \le \epsilon\]
+  which is satisfied if $N \ge \frac{\delta^{-2}\log \epsilon^{-1}}{2}$.
+\end{proof}
+
+\begin{customExercise}{9}
+  Suppose that we want to estimate the mean $\mu$ of a random variable $X$ from a sample $X_1, \ldots, X_N$ drawn indepedently from the distribution of $X$.
+  We want an $\epsilon$-accurate estimate, one that falls in the interval $(\mu - \epsilon, \mu + \epsilon)$.
+
+  \begin{enumerate}
+    \item Show that a sample of size $N = O(\sigma^2/\epsilon^2)$ is sufficient to compute an $\epsilon$-accurate estimate with probability at least $3/4$, where $\sigma^2 - \Var X$.
+    \item Show that a sample of $N = O(\log (\delta^{-1}) \sigma^2/\epsilon^2)$ is sufficient to compute an $\epsilon$-accurate estimate with probability at least $1-\delta$.
+  \end{enumerate}
+\end{customExercise}
+\begin{proof}
+  For the sample mean of size $N$, we have
+  \[P\left( \left|\frac{1}{N}\sum_{i=1}^N X_i - \mu \right| > \epsilon \right)\le \frac{\sigma^2}{N \epsilon^2}\]
+  So for this sample mean to fall in the interval $(\mu-\epsilon, \mu+\epsilon)$ with probability at least $\ge 3/4$, we need $N$ to be 
+  \[
+    N \ge \frac{4 \sigma^2}{\epsilon^2}.
+  \]
+  Now, naive bound will give $N \ge \frac{\delta^{-1} \sigma^2}{\epsilon^2}$.
+  Instead, we will use the median of sample means, $M_{n, k}$ which is median of $2k+1$ sample means, each obtained with $n$ samples.
+  
+  Let $p_n$ be the probability that the sample mean with $n$ samples, is larger than $\mu + \epsilon$.
+  Then the probability that the median of the sample means is larger than $\mu + \epsilon$ is
+  \begin{align*}
+    &P\left( M_{n,k} \ge \mu + \epsilon \right)
+    \\ 
+    =& P\left( \sum_{i=1}^{2k+1} \mathbb{I}_{\hat{\mu}_i > \mu + \epsilon} \ge k+1\right)
+    \\
+    =& P\left( \sum_{i=1}^{2k+1} Y_i \ge k+1 \right)
+    \\
+    = &P\left( \sum_{i=1}^{2k+1} Y_i - (2k+1) p_n \ge k+1 - (2k+1) p_n \right)
+    \\
+    \le &\exp \left( -\frac{2 (k+1 - (2k+1)p_n)^2}{2k+1} \right)
+  \end{align*}
+  where $Y_i \sim \mathrm{Bern}(p_n)$.
+  
+  Doing this symmetrically, we obtain
+  \[P(M_{n,k} \notin (\mu - \epsilon, \mu + \epsilon)) \le 2 \exp \left( - \frac{2 (k+1 - (2k+1) p_n)^2}{2k+1} \right).\]
+  Let $n \ge \frac{4\sigma^2}{\epsilon^2}$ so that $p_n \le 1/4$, giving
+  \[P(M_{n,k} \notin (\mu - \epsilon, \mu + \epsilon)) \le 2 \exp \left( - \frac{2 (k+1 - \frac{2k+1}{4})^2}{2k+1} \right) \le 2 \exp\left( -\frac{k+1}{4} \right).\]
+  So, letting $k$ to
+  \[ k \ge 4\log(2/\delta) \]
+  gives the probability bounded by $\delta$.
+
+  In summary, we require $(8 \log(2/\delta) + 1) \times \frac{4\sigma^2}{\epsilon^2}$ number of samples.
+\end{proof}
+
+\begin{customExercise}{10}
+  Let $X_1, \ldots, X_N$ be nonnegative independent random variables with continuous distributions. Assume that the densities of $X_i$ are uniformly bounded by 1.
+  \begin{enumerate}
+    \item Show that the MGF of $X_i$ satisfies the following for all $t > 0$:
+    \[\E \exp(-t X_i) \le 1/t.\]
+    \item Deduce that, for any $\epsilon > 0$, we have
+    \[P \left( \sum_{i=1}^N X_i \le \epsilon N \right) \le (e \epsilon)^N.\]
+  \end{enumerate}
+\end{customExercise}
+\begin{proof}
+  We first have
+  \[
+    \E \exp(-t X_i) = \int_0^\infty p(x) \exp(-t x) dx \le \int_0^\infty \exp(-tx) dx = \frac{1}{t}.
+  \]
+  Now, we will do similar strategy as Hoeffding's inequality:
+  \begin{align*}
+    &P \left( \sum_{i=1}^N X_i \le \epsilon N \right)
+    \\
+    = &P\left( -\frac{\lambda}{\epsilon} \sum_{i=1}^N X_i \ge -\lambda N \right)
+    \\
+    = &P\left( \exp\left( -\frac{\lambda}{\epsilon} \sum_{i=1}^N X_i \right) \ge \exp(-\lambda N) \right)
+    \\
+    \le &\exp(\lambda N) \E \exp\left( -\frac{\lambda}{\epsilon} \sum_{i=1}^N X_i \right)
+    \\
+    = &\exp(\lambda N) \prod_{i=1}^N \E \exp\left( -\frac{\lambda}{\epsilon} X_i \right)
+    \\
+    \le &\exp(\lambda N) \frac{\epsilon^N}{\lambda^N}
+  \end{align*}
+  Taking $\lambda = 1$ gives the bound.
+\end{proof}
+
+\setcounter{subsection}{3}
+
+\begin{customExercise}{2}
+  Modify the proof of Theorem 2.3.1 to obtain the follwoing bound on the lower tail. For any $t < \mu$, we have
+  \[
+    P(S_N \le t) \le e^{-\mu} \left( \frac{e\mu}{t} \right)^t.
+  \]
+\end{customExercise}
+\begin{proof}
+  We will use $\lambda > 0$, but multiply $-\lambda$ to obtain the following bound on the probability
+  \begin{align*}
+    P(S_N \le t) 
+    &= P(-\lambda S_N \ge -\lambda t)
+    \\
+    &= P(\exp(-\lambda S_N) \ge \exp(-\lambda t))
+    \\
+    &\le \exp(\lambda t) \prod_{i=1}^N \E \exp(-\lambda X_i).
+  \end{align*}
+  Then we can compute the MGF, 
+  \[
+    \E \exp(-\lambda X_i) = e^{-\lambda} p_i + (1-p_i) = (1 + e^{-\lambda} - 1) p_i \le \exp\left( (e^{-\lambda} - 1) p_i \right).
+  \]
+  Plugging in, we have
+  \[
+    \prod_{i=1}^N \E \exp(-\lambda X_i) \le \exp \left( (e^{-\lambda} - 1) \sum_{i=1}^N p_i \right) = \exp\left( (e^{-\lambda} - 1)\mu \right).
+  \]
+  Finally, we obtain the following bound
+  \[
+    p \le \exp(\lambda t + (e^{-\lambda} - 1)\mu )
+  \]
+  and we can set $\lambda = \ln (\mu/t)$, giving
+  \[
+    p \le \exp\left( \log \left( \frac{\mu}{t} \right)^t + (t-\mu) \right) = \left( \frac{\mu}{t} \right)^t e^t e^{-\mu} = e^{-\mu} \left( \frac{e\mu}{t} \right)^t.
+  \]
+\end{proof}
+\begin{customExercise}{3}
+  Let $X \sim \mathrm{Pois}(\lambda)$. Show that, for any $t > \lambda$, we have
+  \[
+    P(X \ge t) \le e^{-\lambda} \left( \frac{e \lambda}{t} \right)^t.
+  \]
+\end{customExercise}
+\begin{proof}
+  We repeat the same procedure, until we have 
+  \[
+    \E (X \ge t) \le e^{-\eta t} \E \exp(\eta X).
+  \]
+  We can unroll the p.d.f. of Poisson random variable, which gives
+  \[\E \exp(\eta X) = \sum_{k=0}^\infty \frac{\lambda^k e^{\eta k}}{k!} = e^{-\lambda} \sum_{k=0}^\infty \frac{(\lambda e^\eta)^k}{k!} = \exp\left( (e^\eta - 1)\lambda \right).\]
+  With $\eta = \log (t/\lambda)$ will prove the result.
+\end{proof}
+
+\begin{customExercise}{5}
+  Show that, in the setting of Theorem 2.3.1, for $\delta \in (0, 1]$ we have
+  \[P \left( |S_N - \mu| \le \delta \mu \right) \le 2 e^{-c \mu \delta^2}\]
+  where $c$ is an absolute constant.
+\end{customExercise}
+\begin{proof}
+  We will prove for the single tale.
+  For the upper tail, we have
+  \[
+    P \left( S_n \ge \mu (1 + \delta) \right) \le e^{-\mu} \left( \frac{e}{1+\delta} \right)^{(1+\delta)\mu} = e^{\delta \mu} (1+\delta)^{-(1+\delta)\mu}.
+  \]
+  Then, it is enough to show that there exists some constant $c > 0$ that
+  \[
+    e^{\delta \mu} (1+\delta)^{-(1+\delta)\mu} \le e^{-c \mu\delta^2}.
+  \]
+  Taking the logarithm simplifies to
+  \[
+    \delta \mu - (1 + \delta) \mu \log(1+\delta) \le -c \mu \delta^2.
+  \]
+  Now at $\delta = 0$, we have both side zero, so the inequality holds.
+  For the inequality to hold, we require the LHS's derivative is smaller than RHS's derivative, 
+  \[
+    -\mu \log(1+\delta) \le -2c\mu \delta
+  \]
+  or 
+  \[
+    \log (1+\delta) \ge 2 c \delta.
+  \]
+  Since $\log$ is concave function, it is enough to plug in $\delta = 0, 1$, which gives $c \le \frac{\log 2}{2}$.
+\end{proof}
+
+\begin{customExercise}{6}
+  Let $X \sim \mathrm{Pois}(\lambda)$. Show that for $t \in (0, \lambda]$, we have
+  \[
+    P (|X-\lambda| \ge t) \le 2 \exp\left( - \frac{2t^2}{\lambda} \right).
+  \]
+\end{customExercise}
+\begin{proof}
+  We again prove only for the upper tail.
+  By the Exercise 2.3.3, we have
+  \[
+    P(X \ge t + \lambda) \le e^{-\lambda} \left( \frac{e \lambda}{\lambda + t} \right)^{\lambda + t} = e^{t} \left( \frac{\lambda}{\lambda + t} \right)^{\lambda + t}.
+  \]
+  Taking the logarithm gives
+  \[
+    t + (\lambda + t) (\log \lambda - \log (\lambda + t)).
+  \]
+  which is zero when $t = 0$.
+  Again, to show the similar inequality, we should require the derivative w.r.t. $t$,
+  \[
+    \log \lambda - \log (\lambda + t) \le -\frac{2ct}{\lambda}
+  \]
+  which is concave function, so it is enough to let
+  \[
+    \log \left( 1 + \frac{1}{\lambda} \right)^\lambda \ge 1 \ge 2c.
+  \]
+\end{proof}
+
+\begin{customExercise}{8}
+  Let $X \sim \mathrm{Pois}(\lambda)$. Show that, as $\lambda \to \infty$, we have
+  \[
+    \frac{X - \lambda}{\sqrt{\lambda}} \to \cN(0, 1)
+  \]
+  in distribution.
+\end{customExercise}
+\begin{proof}
+  Let $N = \lfloor \lambda \rfloor$.
+  Then, we can rewrite as
+  \[\frac{X - \lambda}{\sqrt{\lambda}} = \frac{\sqrt{N}}{\sqrt{\lambda}} \left( \frac{\sum_{i=1}^N Y_i - N}{\sqrt{N}} + \frac{Z}{\sqrt{N}} - \frac{\lambda - N}{\sqrt{N}} \right)\]
+  where $Y_i \sim \mathrm{Pois}(1)$, $Z \sim \mathrm{Pois}(\lambda - N)$.
+
+  Then, we have
+  \begin{align*}
+    \frac{\sqrt{N}}{\sqrt{\lambda}} &\to 1,
+    \\
+    \frac{\sum_{i=1}^N Y_i - N}{\sqrt{N}} &\to \cN(0, 1),
+    \\
+    \frac{Z}{\sqrt{N}} &\to 0,
+    \\
+    \frac{\lambda - N}{\sqrt{N}} &\to 0,
+  \end{align*}
+  in distribution.
+  Since all other values converge to constant, this limit is simultaneous, and we have the final result.
+\end{proof}
 \end{document}
