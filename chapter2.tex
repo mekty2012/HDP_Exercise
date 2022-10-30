@@ -299,7 +299,7 @@
 \end{proof}
 
 \begin{customExercise}{5}
-  Show that, in the setting of Theorem 2.3.1, for $\delta \in (0, 1]$ we have
+  Show that, in the setting of Theorem 2.3.1, for $\delta \in (0, 1)$ we have
   \[P \left( |S_N - \mu| \le \delta \mu \right) \le 2 e^{-c \mu \delta^2}\]
   where $c$ is an absolute constant.
 \end{customExercise}
@@ -330,7 +330,7 @@
 \end{proof}
 
 \begin{customExercise}{6}
-  Let $X \sim \mathrm{Pois}(\lambda)$. Show that for $t \in (0, \lambda]$, we have
+  Let $X \sim \mathrm{Pois}(\lambda)$. Show that for $t \in (0, \lambda)$, we have
   \[
     P (|X-\lambda| \ge t) \le 2 \exp\left( - \frac{2t^2}{\lambda} \right).
   \]
@@ -419,36 +419,89 @@
   \]
 \end{customExercise}
 \begin{proof}
-  From the assumption, we have $d \le c$ for some $c$.
-  We will do similar, where we instead need to show that
-  \[
-    P\left( d_i > C \frac{\log n}{\log \log n} \right) \le 0.9/n.
-  \]
-  Again by Theoerm 2.3.1, we have the bound
-  \begin{align*}
-    &P\left(d_i > \frac{C \log n}{\log \log n}\right)
-    \\
-    \le &e^{-d} \left( \frac{e d \log \log n}{C \log n} \right)^{C \log n / \log \log n}
-    \\
-    \le &e^{\frac{C \log n}{\log \log n}-d} \left( \frac{c \log \log n}{C \log n} \right)^{C \log n / \log \log n}
-  \end{align*}
-  Let's assume $C \ge c$ for simplicity. This allows us to bound
-  \[
-    P \left( d_i > \frac{C \log n}{\log \log n} \right) \le e^{\frac{C \log n}{\log \log n} - d} \left( \frac{\log \log n}{\log n} \right)^{C \log n / \log \log n}
-  \]
-  Now, write $t = \log n / \log \log n$, and let $g(t) = (1/t)^t$, which allows us to see
-  \begin{align*}
-    g'(t) &= (1/t)^t \left( \log (1/t) - 1 \right),
-    \\
-    g'(t) &= 0 \Leftrightarrow t = 1/e,
-    \\
-    g''(1/e) &= - e^{1/e + 1}. 
-  \end{align*}
-  So this function attains its maximum at $t = 1/e$, with the value $e^{1/e}$. 
-  Applying this to our case, we can obtain
-  \[
-    P\left( d_i > \frac{C \log n}{\log \log n} \right) \le e^{\frac{C \log n}{\log \log n} - d + C/e}
-  \]
+  From the assumption, we have $d \le c$ for some $c$. For simplicity, let's write $t = C \log n / \log \log n$. For simplicity, let's assume that $t$ is integer, and $n \ge e^e$. This is natural assumption, since our bound contains $\log \log n$.
   
+  Instead of Chernoff bound, we will use the Union-bound approach.
+  We can first give the bound as
+  \begin{align*}
+    &P\left( d_i > t \right) 
+    \\
+    = &P\left( \exists S \subset [d] \setminus \{i\}, |S| = t .e_{ij} = 1 : j \in S \right)
+    \\
+    \le &\sum_{\substack{S \subset [d] \setminus \{i\}\\|S| = t}} P\left( e_{ij = 1} : j \in S \right)
+    \\
+    = & \binom{n-1}{t } p^{t}.
+  \end{align*}
+  So we need to show that
+  \[
+    n \binom{n-1}{t} p^{t} \le 0.9.
+  \]
+  Using the Exercise 0.0.5, we have
+  \[
+    n \binom{n-1}{t} p^{t}
+    \le n \left( \frac{e(n-1)p}{t} \right)^{t}
+    = n \left( \frac{ed }{t} \right)^{t} \le n \left( \frac{ec}{t} \right)^{t}
+  \]
+  To simplify, let's take logarithm, giving
+  \begin{align*}
+    &\log n + t \left( \log c + 1 - \log t \right) 
+    \\
+    = &\log n + t (\log c + 1 - \log C - \log \log n + \log \log \log n)
+    \\
+    = &\log n - t \log \log n \left( 1 - \frac{\log c + 1 - \log C + \log \log \log n}{\log \log n} \right)
+    \\
+    = &\log n - C \log n \left( 1 - \frac{\log c + 1 - \log C + \log \log \log n}{\log \log n} \right)
+    \\
+    = &\log n \left( 1 + \frac{\log c + 1 - \log C + \log \log \log n}{\log \log n} - C \right)
+    \\
+    \le &\log n \left( \log c + 2 - C \right)
+  \end{align*}
+  So taking
+  \[C \ge \log c + 2 - \frac{0.9}{e}\]
+  finishes the proof.
+\end{proof}
+
+\begin{customExercise}{4}
+  Consider a random graph $G \sim G(n, p)$ with expected degrees $d = o(\log n)$. Show that, with high probability, $G$ has a vertex with degree $10d$.
+\end{customExercise}
+\begin{proof}
+  Let's take $0 < k < n$. 
+  We can bound both $np$ and $d$ by $c \log n$ for some $c > 1/20$.
+  Then, the probability that a graph has some vertex with degree $10d$ is lower bounded as
+  \begin{align*}
+    &P\left( \exists i. d_i > 10d \right)
+    \\
+    \ge &k P\left( B(n - k, p) > 10d \right)
+    \\
+    = &k (1 - P\left( B(n - k, p) \le 10d \right))
+    \\
+    \ge &k \left(1 - e^{-(n-k)p} \left(\frac{e (n-k) p}{10d}\right)^{10d}\right)
+    \\
+    = &k \left( 1 - \exp(10d-(n-k)p)  \left( \frac{(n-k)p}{10d} \right)^{10d}\right)
+    \\
+    \ge &k \left( 1 - \exp(10d - (n-k) p) \left( \frac{(n-k)p}{10d} \right)^{c \log n} \right).
+  \end{align*}
+  Let's take $k = n/2$, which is actually one of optimal choice.
+  Then we have
+  \begin{align*}
+    &\frac{n}{2} \left( 1 - \exp(10d - np/2) \left( \frac{np/2}{10d} \right)^{c \log n} \right)
+    \\
+    = &\frac{n}{2} \left( 1 - \exp(10(n-1)p - np/2 )  \left( \frac{n}{20c(n-1)} \right)^{c \log n} \right)
+    \\
+    = &\frac{n}{2} \left( 1 - \exp((10-1/2)np - 10p )  \left( \frac{n}{20c(n-1)} \right)^{c \log n} \right)
+    \\
+    \ge &\frac{n}{2} \left( 1 - \exp(10np)  \left( \frac{1}{10c} \right)^{c \log n} \right)
+    \\
+    = &\frac{n}{2} \left( 1 - \exp\left( 10np - c \log n \log 10c \right) \right)
+    \\
+    \ge &\frac{n}{2} \left( 1 - \exp\left( 10c\log n - c \log n \log 10c \right) \right)
+    \\
+    = &\frac{n - n^{10c + 1 - c \log 10c}}{2}
+  \end{align*}
+  Taking the derivative, we can see this function attains its extreme at
+  \[n = (10c + 1 - c \log 10 c)^{-10c + c \log 10 c}\]
+  which can be verified that it is actually global maximum, since the second derivative is negative.
+  The maximum is
+  \[\frac{n (1 - 10c - 1 + c \log 10c)}{2}\]
 \end{proof}
 \end{document}
