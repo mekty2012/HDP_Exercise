@@ -382,4 +382,73 @@
   in distribution.
   Since all other values converge to constant, this limit is simultaneous, and we have the final result.
 \end{proof}
+
+\setcounter{subsection}{4}
+\begin{customExercise}{2}
+  Consider a random graph $G \sim G(n, p)$ with expected degrees $d = O(\log n)$. Show that with high probability, all the vertices of $G$ have degree $O(\log n)$.
+\end{customExercise}
+\begin{proof}
+  We first have
+  \[
+    P\left( \exists i. d_i > C \log n \right) \le \sum_{i=1}^n P\left( d_i > C \log n \right) \le n P(d_i > C \log n).
+  \]
+  so we need to show $P(d_i > C \log n) \le 0.9/n$.
+  Now since $d_i \sim B(n-1, p)$, by theorem 2.3.1, and assumption $d \le c \log n$:
+  \begin{align*}
+    &P\left( d_i > C \log n \right) 
+    \\
+    \le &e^{-d} \left( \frac{e d}{C \log n} \right)^{C \log n} 
+    \\
+    = &\exp(C \log n - d) \left( \frac{d}{C \log n} \right)^{C \log n}
+    \\
+    \le &n^C \exp(-d) \left( c/C \right)^{\log n^C}
+    \\
+    = &n^C \exp(-d) n^{C \log (c/C)}
+    \\
+    \le &n^{C (1 + \log (c/C))}. 
+  \end{align*}
+  The function $C \mapsto C(1 + \log (c/C))$ has derivative $\log (c/C)$, which tends to $-\infty$ as $C$ becomes large, so we can find some $C$ such that
+  \[C (1+\log (c/C)) \le -2 \le \log_n 0.9 - 1.\]
+  This completes the proof.
+\end{proof}
+
+\begin{customExercise}{3}
+  Consider a random graph $G \sim G(n, p)$ with expected degrees $d = O(1)$. Show that with high probability, all the vertices of $G$ has degree 
+  \[
+    O\left( \frac{\log n}{\log \log n} \right).  
+  \]
+\end{customExercise}
+\begin{proof}
+  From the assumption, we have $d \le c$ for some $c$.
+  We will do similar, where we instead need to show that
+  \[
+    P\left( d_i > C \frac{\log n}{\log \log n} \right) \le 0.9/n.
+  \]
+  Again by Theoerm 2.3.1, we have the bound
+  \begin{align*}
+    &P\left(d_i > \frac{C \log n}{\log \log n}\right)
+    \\
+    \le &e^{-d} \left( \frac{e d \log \log n}{C \log n} \right)^{C \log n / \log \log n}
+    \\
+    \le &e^{\frac{C \log n}{\log \log n}-d} \left( \frac{c \log \log n}{C \log n} \right)^{C \log n / \log \log n}
+  \end{align*}
+  Let's assume $C \ge c$ for simplicity. This allows us to bound
+  \[
+    P \left( d_i > \frac{C \log n}{\log \log n} \right) \le e^{\frac{C \log n}{\log \log n} - d} \left( \frac{\log \log n}{\log n} \right)^{C \log n / \log \log n}
+  \]
+  Now, write $t = \log n / \log \log n$, and let $g(t) = (1/t)^t$, which allows us to see
+  \begin{align*}
+    g'(t) &= (1/t)^t \left( \log (1/t) - 1 \right),
+    \\
+    g'(t) &= 0 \Leftrightarrow t = 1/e,
+    \\
+    g''(1/e) &= - e^{1/e + 1}. 
+  \end{align*}
+  So this function attains its maximum at $t = 1/e$, with the value $e^{1/e}$. 
+  Applying this to our case, we can obtain
+  \[
+    P\left( d_i > \frac{C \log n}{\log \log n} \right) \le e^{\frac{C \log n}{\log \log n} - d + C/e}
+  \]
+  
+\end{proof}
 \end{document}
