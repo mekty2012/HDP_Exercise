@@ -466,7 +466,6 @@
 \end{customExercise}
 \begin{proof}
   Let's take $0 < k < n$. 
-  We can bound both $np$ and $d$ by $c \log n$ for some $c > 1/20$.
   Then, the probability that a graph has some vertex with degree $10d$ is lower bounded as
   \begin{align*}
     &P\left( \exists i. d_i > 10d \right)
@@ -474,34 +473,87 @@
     \ge &k P\left( B(n - k, p) > 10d \right)
     \\
     = &k (1 - P\left( B(n - k, p) \le 10d \right))
-    \\
-    \ge &k \left(1 - e^{-(n-k)p} \left(\frac{e (n-k) p}{10d}\right)^{10d}\right)
-    \\
-    = &k \left( 1 - \exp(10d-(n-k)p)  \left( \frac{(n-k)p}{10d} \right)^{10d}\right)
-    \\
-    \ge &k \left( 1 - \exp(10d - (n-k) p) \left( \frac{(n-k)p}{10d} \right)^{c \log n} \right).
   \end{align*}
-  Let's take $k = n/2$, which is actually one of optimal choice.
+  by limiting the candidates for large degree to $k$ first vertices, and ignore the edges between them.
+  For simplicity, let's take $k = n/2$, so that
+  \[
+    P\left( \exists i. d_i > 10d \right) \le \frac{n}{2} (1 - P(B(n/2, p) \le 10d))
+  \]
+  and it is enough to show that
+  \[
+    P(B(n/2, p) \le 10d) \le 1 - \frac{2C}{n}.
+  \]
+  Now, using the Exercise 2.3.2, we have
+  \[
+    P(B(n/2, p) \le 10d) \le e^{-np/2} \left( \frac{enp/2}{10d} \right)^{10d}= \exp\left( 10d - \frac{np}{2} \right) \left( \frac{np}{20d} \right)^{10d}.
+  \]
+  Since $d = (n-1)p = o(\log n)$, let's take $\epsilon = 1$, that there exists $n_0$ s.t. $n \ge n_0$ implies $d = (n-1)p \le \log n$.
+  Let's assume that $n \ge n_0$ now.
+
+  Then, we can rewrite the bound as
+  \[
+    p \le \exp\left( 10 \log n \right) \left( \frac{np}{20d} \right)^{10 \log n} \le n^{10} = n^{10 - 10 \log 10} 
+  \]
+  Take $C = 1$, and assume $n_0 >= 2$.
   Then we have
+  \[p \le 0.0002\]
+  and
+  \[
+    P(\exists i. d_i > 10d) \ge 0.9998.
+  \]
+\end{proof}
+
+\begin{customExercise}{5}
+  Consider a random graph $G \sim G(n, p)$ with expected degrees $d = O(1)$.
+  Show that, with probability of 0.9, $G$ has a vertex whose degree is at least of order 
+  \[
+    \frac{\log n}{\log \log n}.
+  \]
+\end{customExercise}
+\begin{proof}
+  We will do the similar strategy as 2.4.4.
+  For simplicity, write $t = \frac{C \log n}{\log \log n}$.
+  Then the probability we are concerned can be lower bounded as
   \begin{align*}
-    &\frac{n}{2} \left( 1 - \exp(10d - np/2) \left( \frac{np/2}{10d} \right)^{c \log n} \right)
-    \\
-    = &\frac{n}{2} \left( 1 - \exp(10(n-1)p - np/2 )  \left( \frac{n}{20c(n-1)} \right)^{c \log n} \right)
-    \\
-    = &\frac{n}{2} \left( 1 - \exp((10-1/2)np - 10p )  \left( \frac{n}{20c(n-1)} \right)^{c \log n} \right)
-    \\
-    \ge &\frac{n}{2} \left( 1 - \exp(10np)  \left( \frac{1}{10c} \right)^{c \log n} \right)
-    \\
-    = &\frac{n}{2} \left( 1 - \exp\left( 10np - c \log n \log 10c \right) \right)
-    \\
-    \ge &\frac{n}{2} \left( 1 - \exp\left( 10c\log n - c \log n \log 10c \right) \right)
-    \\
-    = &\frac{n - n^{10c + 1 - c \log 10c}}{2}
+    P(\exists i. d_i > t)
+    \ge \frac{n}{2} P\left( B(n/2, p) > t \right)
+    = \frac{n}{2} \left( 1 - P\left( B(n/2, p) \le t \right) \right).
   \end{align*}
-  Taking the derivative, we can see this function attains its extreme at
-  \[n = (10c + 1 - c \log 10 c)^{-10c + c \log 10 c}\]
-  which can be verified that it is actually global maximum, since the second derivative is negative.
-  The maximum is
-  \[\frac{n (1 - 10c - 1 + c \log 10c)}{2}\]
+  So, it is enough to show that
+  \[
+    P\left( B(n/2, p) \le t \right) \le 1 - \frac{1.8}{n}.
+  \]
+  By Exercise 2.3.2, we have
+  \[
+    P\left( B(n/2, p) \le t \right) \le e^{-np/2} \left( \frac{enp/2}{t} \right)^{t}.
+  \]
+  By assumption, we have some $c$ that $np \le c$, which gives
+  \[
+    P\left( B(n/2, p) \le t \right) \le e^{-np/2}\left( \frac{ec}{2t} \right)^t \le \left( \frac{ec}{2t} \right)^t.
+  \]
+  Taking logarithm, we have
+  \begin{align*}
+    &t (\log c + 1 - \log 2 - \log t)
+    \\ = &t (\log c + 1 - \log 2 - \log C  - \log \log n + \log \log \log n)
+    \\ =& t\log \log n \left(\frac{\log c + 1 - \log 2 - \log C + \log \log \log n}{\log \log n}-1\right)
+    \\ =& C \log n \left(\frac{\log c + 1 - \log 2 - \log C + \log \log \log n}{\log \log n}-1\right)
+    \\ \le&C \log n \left( \frac{\log c + 1 + \log \log \log n}{\log \log n} - 1 \right)
+  \end{align*}
+  For simplicity, let's assume that $n > n_0$ for some $n_0 > 18$, so that
+  \[
+    \frac{\log c + 1 + \log \log \log n}{\log \log n} - 1 < -\frac{1}{2}.
+  \]
+  Then, we have
+  \[
+    p \le n^{-C/2}.
+  \]
+  and it is enough to show that
+  \[
+    n^{-C/2} + \frac{1.8}{n} \le 1.
+  \]
+  Since this is strictly decreasing function, it is enough to set $C$ small enough to satisfy
+  \[
+    n_0^{-C/2} \le 0.9.
+  \]
 \end{proof}
 \end{document}
