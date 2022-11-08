@@ -551,9 +551,58 @@
   \[
     n^{-C/2} + \frac{1.8}{n} \le 1.
   \]
-  Since this is strictly decreasing function, it is enough to set $C$ small enough to satisfy
+  Since this is strictly decreasing function on $n$, it is enough to set $C$ small enough to satisfy
   \[
     n_0^{-C/2} \le 0.9.
   \]
+\end{proof}
+
+\setcounter{subsection}{5}
+\begin{customExercise}{1}
+  Show that, for each $p \ge 1$, the random variable $X \sim \cN(0,1)$ satisfies
+  \[
+    \|X\|_{L^p} = (\E |X|^p)^{1/p} = \sqrt{2} \left( \frac{\Gamma((1+p)/2)}{\Gamma(1/2)} \right)^{1/p}.
+  \]
+\end{customExercise}
+\begin{proof}
+  We can first write
+  \begin{align*}
+    \E |X|^p 
+    &= 2\int_0^\infty t^p \frac{1}{\sqrt{2\pi}} \exp(- t^2/2) dt
+    \\
+    &= \frac{\sqrt{2}}{\pi} \int_0^\infty t^p \exp(- t^2/2) dt.
+  \end{align*}
+  Let's write the integral as $I_p$.
+  
+  If we apply integration by parts to $I_{p-2}$, we have
+  \begin{align*}
+    &\int_0^\infty t^{p-2} \exp(-t^2/2) dt
+    \\
+    = &\left[ \frac{1}{p-1} t^{p-1} \exp(-t^2/2) \right]_0^\infty + \int_0^\infty \frac{1}{p-1} t^p \exp(-t^2/2) dt
+  \end{align*}
+  and we obtain the recursive definition
+  \[
+    I_p = (p-1) I_{p-2}.
+  \]
+  Unrolling this gives
+  \[
+    I_p = (p-1)!! \times \begin{cases}
+      I_1 & p\text{ is odd} \\
+      I_0 & p\text{ is even}
+    \end{cases}
+  \]
+  and we have
+  \begin{align*}
+    I_1 &= \sqrt{\pi}, \\
+    I_0 &= \frac{\pi}{\sqrt{2}}.
+  \end{align*}
+  This gives
+  \[
+    \E |X|^p = (p-1)!! \times \begin{cases}
+      \sqrt{2/\pi} & p\text{ is odd} \\
+      1 & p\text{ is even}
+    \end{cases}
+  \]
+  And rewriting the double factorial to Gamma function gives the result.
 \end{proof}
 \end{document}
