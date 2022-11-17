@@ -605,4 +605,164 @@
   \]
   And rewriting the double factorial to Gamma function gives the result.
 \end{proof}
+
+\begin{customExercise}{4}
+  Show that the condition $\E X = 0$ is necessary for property (v) to hold.
+\end{customExercise}
+\begin{proof}
+  By Jensen's inequality, we have
+  \[
+    \exp(\E \lambda X) \le \E \exp(\lambda X) \le \exp(K_t^2 \lambda^2).
+  \]
+  We can rewrite this as
+  \[
+    \E X \le K_t^2 \lambda
+  \]
+  for arbitrary $\lambda$, which is not satisfied if we set $\lambda$ arbitrary small.
+\end{proof}
+
+\begin{customExercise}{5}
+  \begin{enumerate}
+    \item Show that if $X \sim \cN(0, 1)$, the function $\lambda \mapsto \E \exp(\lambda^2 X^2)$ of $X^2$ is finite only in some bounded neighborhood of zero.
+    \item Suppose that some random variable $\E \exp(\lambda^2 X^2) \le \exp(K \lambda^2)$ for all $\lambda \in \R$ and some constant $K$> Show that $X$ is a bounded random variable.
+  \end{enumerate}
+\end{customExercise}
+\begin{proof}
+  \begin{enumerate}
+    \item The given function can be written in integral form:
+    \[
+      \frac{1}{\sqrt{2\pi}}\int_\R \exp\left( \lambda^2 x^2 - \frac{x^2}{2} \right) dx
+    \]
+    This integral is finite only when $\lambda^2 - 1/2$ is negative, otherwise infinite.
+    \item The following holds for all $\lambda$:
+    \begin{align*}
+      P\left( |X| \ge t \right) 
+      &\le P \left( \exp(\lambda^2 X^2) \le \exp(\lambda^2 t^2)\right)
+      \\
+      &\le \exp(-\lambda^2 t^2) \E \exp(\lambda^2 X^2)
+      \\
+      &\le \exp\left( \lambda^2 (K - t^2) \right).
+    \end{align*}
+    Let $t$ large enough so that $K - t^2 < 0$.
+    Then, by taking the infimum for $\lambda$ for both side, we have $P(|X| \ge t) = 0$, and $\|X\|_\infty \le \sqrt{K}$.
+  \end{enumerate}
+\end{proof}
+
+\begin{customExercise}{7}
+  Check that $\|\cdot\|_{\psi_2}$ is indeed a norm on the space of sub-gaussian random variables.
+\end{customExercise}
+\begin{proof}
+  We will use the fact that $\exp(x^2)$ is convex.
+  For $a, b > 0$, we have
+  \begin{align*}
+    \E \exp\left( \frac{|X + Y|}{a + b} \right)^2 
+    &\le \E \exp\left( \frac{|X| + |Y|}{a + b} \right)^2 
+    \\
+    &\le \frac{a}{a+b} \E \exp\left( \frac{|X|}{a} \right)^2 + \frac{b}{a+b} \E \exp\left( \frac{|Y|}{b} \right)^2
+  \end{align*}
+  Now if we plug in $a = \|X\|_{\psi_2}$ and $b = \|Y\|_{\psi_2}$, we have
+  \[
+    \E \exp\left( \frac{|X|}{\|X\|_{\psi_2}} \right)^2 \le 2,\quad\quad \E \exp\left( \frac{|Y|}{\|Y\|_{\psi_2}} \right)^2 \le 2
+  \]
+  which gives 
+  \[
+    \E \exp\left( \frac{|X + Y|}{a + b} \right)^2 \le \frac{2a}{a+b} + \frac{2b}{a+b} = 2.
+  \]
+\end{proof}
+
+\begin{customExercise}{9}
+  Check that the Poisson, exponential, Pareto, and Cauchy distributions are not sub-gaussian.
+\end{customExercise}
+\begin{proof}
+  \begin{description}
+    \item[Poisson] The Poisson random variable $X \sim \mathrm{Poisson}(\lambda)$ satisfy
+    \[
+      (\E |X|^p)^{1/p} = \lambda \exp\left( \frac{p}{2\lambda} \right) \gtrapprox \sqrt{p}.
+    \]
+    \item[Exponential] The exponential random variable $X \sim \mathrm{Exp}(\lambda)$ satisfy
+    \[
+      (\E |X|^p)^{1/p} = \frac{(p!)^{1/p}}{\lambda} \ge \frac{p}{e\lambda} \gtrapprox \sqrt{p}.
+    \]
+    \item[Pareto] The Pareto random variable $X \sim \mathrm{Pareto}(0, \alpha)$ satisfy
+    \[
+      \E |X|^p = \infty \text{ for } p \ge \alpha.
+    \]
+    \item[Cauchy] The Cauchy random variable $X \sim \mathrm{Cauchy}(0, \gamma)$ satisfy
+    \[
+      \E |X|^p = \infty \text{ for } p \ge 1.
+    \]
+  \end{description}
+\end{proof}
+
+\begin{customExercise}{10}
+  Let $X_1, X_2, \ldots$ be an infinite sequence of sub-gaussian random variables which are not necessarily independent. 
+  Show that
+  \[
+    \E \max_i \frac{|X_i|}{\sqrt{1 + \log i}} \le CK,
+  \]
+  where $K = \max_i \|X_i\|_{\psi_2}$.
+  Deduce that for every $N \ge 2$ we have
+  \[
+    \E \max_{i \le N} |X_i| \le CK \sqrt{\log N}.
+  \]
+\end{customExercise}
+\begin{proof}
+  We will use the integral form of the expectation since RV is nonnegative, 
+  \begin{align*}
+    &\E \max_i \frac{|X_i|}{\sqrt{1 + \log i}}
+    \\
+    = &\int_0^\infty P\left( \max_i \frac{|X_i|}{\sqrt{1 + \log i}} \ge t \right) dt.
+  \end{align*}
+  Now, instead of this integral, let's analyze the truncated integral
+  \begin{align*}
+    &\int_C^\infty P\left( \max_i \frac{|X_i|}{\sqrt{1 + \log i}} \ge t \right) dt
+    \\
+    = &\int_C^\infty P\left( \exists i.\  \frac{|X_i|}{\sqrt{1 + \log i}} \ge t \right) dt
+    \\
+    \le &\int_C^\infty \sum_{i=1}^\infty P\left(\frac{|X_i|}{\sqrt{1 + \log i}} \ge t \right) dt
+    \\
+    = &\int_C^\infty \sum_{i=1}^\infty P\left(|X_i| \ge t\sqrt{1 + \log i} \right) dt
+    \\
+    \le &\int_C^\infty \sum_{i=1}^\infty 2\exp\left( - C_1 \frac{t^2 (1 + \log i)}{\|X_i\|_{\psi_2}^2} \right) dt
+    \\
+    = &\int_C^\infty \sum_{i=1}^\infty 2\exp\left( - C_1 \frac{t^2 (1 + \log i)}{K^2} \right) dt
+    \\
+    \le &2\sum_{i=1}^\infty \exp\left(- \frac{C_1 C^2 \log i}{K^2}\right)\int_C^\infty \exp\left( - C_1 \frac{t^2}{K^2} \right)  dt
+    \\
+    \le &\frac{K\sqrt{\pi}}{\sqrt{C_1}} \sum_{i=1}^\infty i^{- C_1 C^2 / K^2}
+  \end{align*}
+  So, if $C$ is large enough, the infinite sum will converge to some finite value, giving this integral have $O(K)$.
+  
+  Now the rest of integral can be bounded, if we take $C = O(K)$, which gives
+  \[
+  \int_0^C P\left( \max_i \frac{|X_i|}{\sqrt{1 + \log i}} \ge t \right) dt \le \int_0^C 1 dt = O(K).
+  \]
+  
+  Finally, let's take $C$ to be $\frac{2K}{\sqrt{C_1}}$, then 
+  \begin{align*}
+    &\E \max_i \frac{|X_i|}{ \sqrt{1 + \log i}}
+    \\
+    \le &\frac{2K}{\sqrt{C_1}} + \frac{K\sqrt{\pi}}{\sqrt{C_1}} \sum_{i=1}^\infty i^{-4} 
+    \\
+    \le &K \left( \frac{180 + \pi^{9/2}}{90\sqrt{C_1}} \right)
+  \end{align*}
+
+  For the second part, we can simply set all the $X_i = 0$ for $i > N$, which gives
+  \[
+    \E \max_{i \le N} |X_i| \le \sqrt{1 + \log N} \E \max_{i} \frac{|X_i|}{\sqrt{1 + \log i}} \le \sqrt{1 + \log N} CK \le 3CK.
+  \]
+\end{proof}
+
+\begin{customExercise}{11}
+  Show that the bound in Exercise 2.5.10 is sharp. 
+  Let $X_1, X_2, \ldots, X_N$ be independent $\cN(0, 1)$ random variables. 
+  Prove that
+  \[
+    \E \max_{i \le N} X_i \ge c \sqrt{\log N}.
+  \]
+\end{customExercise}
+\begin{proof}
+  
+\end{proof}
+
 \end{document}
