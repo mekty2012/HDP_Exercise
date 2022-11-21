@@ -762,7 +762,194 @@
   \]
 \end{customExercise}
 \begin{proof}
+  We will first split this expectation to two events, 
+  \[
+    \E \max_{i \le N} X_i = P(X_1 < 0) \E \left[\max_{i \le N} X_i \mid X_1 < 0\right] + P(X_1 \ge 0) \E \left[\max_{i \le N} X_i \mid X_1 \ge 0\right]
+  \]
+  For the first term, we can lower bound it as
+  \begin{align*}
+    &P(X_1 < 0) \E \left[\max_{i \le N} X_i \mid X_1 < 0\right] 
+    \\
+    \ge &\frac{1}{2} \left[ -|X_i| \mid X_1 < 0 \right]
+    \\
+    = & -\frac{1}{\sqrt{2\pi}}.
+  \end{align*}
+  For the second term, now it is expectation of nonnegative random variable, we can rewrite it to integral form
+  \[
+    \E \left[\max_{i \le N} X_i \mid X_1 \ge 0\right] = \int_0^\infty P\left( \max_{i \le N} X_i \ge t \mid X_1 \ge 0\right) dt.
+  \]
+  Now, note that 
+  \begin{align*}
+    P(X_1 \ge t \mid X_1 \ge 0) &\ge \frac{2}{\sqrt{2\pi}} \int_0^1 \exp\left( - \frac{(x+y)^2}{2} \right) dy \ge C_1 \exp(-x^2),
+    \\
+    P(X_i \ge t) &\ge \frac{1}{\sqrt{2\pi}} \int_0^1 \exp\left( - \frac{(x+y)^2}{2} \right) dy \ge C_2 \exp(-x^2).
+  \end{align*}
+  To use these inequalities, we have
+  \begin{align*}
+    &\E \left[\max_{i \le N} X_i \mid X_1 \ge 0\right] 
+    \\
+    = &\int_0^\infty P\left( \max_{i \le N} X_i \ge t \mid X_1 \ge 0\right) dt
+    \\
+    = &\int_0^\infty 1 - (1 - P(X_1 \ge t \mid X_1 \ge 0))\prod_{i=2}^N\left( 1 - P(X_i \ge t) \right) dt
+    \\
+    = &\int_0^\infty 1 - (1 - c e^{-t^2})^N dt
+  \end{align*}
+  If we apply change of variable $x = \sqrt{\log N} u$, we have
+  \begin{align*}
+    &\int_0^\infty 1 - (1 - c e^{-t^2})^N dt 
+    \\
+    = &\sqrt{\log N} \int_0^\infty 1 - \left(1 - \frac{c}{N^{u^2}}\right)^N du
+    \\
+    \ge &\sqrt{\log N} \int_0^\infty 1 - \alpha^{1 / u^2} du
+  \end{align*}
+  where $\alpha$ does not depend on $N$.
+
+  The last integral is finite for $\alpha < 1$.
+  TODO.
+\end{proof}
+
+\setcounter{subsection}{6}
+
+\begin{customExercise}{4}
+  Deduce Hoeffding's inequality for bounded random variables from Theorem 2.6.3, possibly with some other absolute constant instead of 2 in the exponent.
+
+  \[
+    P\left( \left|\sum_{i=1}^N (X_i - \E X_i)\right| \ge t \right) \le 2\exp\left( -\frac{Ct^2}{\sum_{i=1}^N (M_i - m_i)^2} \right).
+  \]
+\end{customExercise}
+\begin{proof}
+  By (iii) of Example 2.5.8, each random variables are subgaussian with norms
+  \[
+    \|X_i - \E X_i\|_{\psi_2} \le C \|X_i - \E X_i\|_\infty = C (M_i - m_i).
+  \]
+  Then by theorem 2.6.2, we have
+  \begin{align*}
+    P \left( \left|\sum_{i=1}^N (X_i - \E X_i)\right| \ge t \right) \le 2 \exp\left( - \frac{ct^2}{C^2\sum_{i=1}^N (M_i - m_i)^2} \right).
+  \end{align*}
+\end{proof}
+
+\begin{customExercise}{5}
+  Let $X_1, \ldots, X_N$ be independent sub-gaussian random variables with zero means and unit variances, and let $a = (a_1, \ldots, a_N) \in \R^N$.
+  Prove that for every $p \in [2, \infty)$ we have
+  \[
+    \left( \sum_{i=1}^N a_i^2 \right)^{1/2} \le \left\| \sum_{i=1}^N a_i X_i \right\|_{L^p} \le C K \sqrt{p} \left( \sum_{i=1}^N a_i^2 \right)^{1/2}
+  \]
+  where $K = \max_i \|X_i\|_{\psi_2}$ and $C$ is an absolute constant.
+\end{customExercise}
+\begin{proof}
+  For the upper bound, we have
+  \begin{align*}
+    \left\| \sum_{i=1}^N a_i X_i \right\|_{L^p} 
+    &= \E \left[ \left| \sum_{i=1}^N a_i X_i \right|^p \right]^{1/p}
+    \\
+    &= \left( \int_0^\infty P\left( \left| \sum_{i=1}^N a_i X_i \right|^p \ge t \right) dt \right)^{1/p}
+    \\
+    &= \left( \int_0^\infty P\left( \left| \sum_{i=1}^N a_i X_i \right| \ge t^{1/p} \right) dt \right)^{1/p}
+    \\
+    &\le \left( \int_0^\infty 2 \exp \left( - \frac{C t^{2/p}}{K^2 \|a\|_2^2}  \right) dt \right)^{1/p}
+    \\
+    &= \left( 2 \frac{\Gamma(1 + p/2)}{(c/K^2 \|a\|_2^2)^{p/2}} \right)^{1/p}
+    \\
+    &\le \frac{\sqrt{2}}{\sqrt{c}} K \|a\| \Gamma\left( 1 + \frac{p}{2} \right)^{1/p} 
+    \\
+    &\le \frac{\sqrt{2}}{\sqrt{c}} K \|a\| \sqrt{p}.
+  \end{align*}
+  The lower bound is immediate from the Jensen's inequality, as
+  \[
+    \E \left[ \left| \sum_{i=1}^N a_i X_i \right|^p \right]^{1/p} \ge \E \left[ \left| \sum_{i=1}^N a_i X_i \right|^2 \right]^{1/p \cdot p/2} = \left( \sum_{i=1}^N a_i^2 \right)^{1/2}.
+  \]
+\end{proof}
+
+\begin{customExercise}{6}
+  Show that, in the setting of Exercise 2.6.5, we have
+  \[
+    c(K) \left( \sum_{i=1}^N a_i^2 \right)^{1/2} \le \left\| \sum_{i=1}^N a_i X_i \right\|_{L^1} \le \left( \sum_{i=1}^N a_i^2 \right)^{1/2}.
+  \]
+\end{customExercise}
+\begin{proof}
+  The upper bound is immediate from the Jensen's inequality, as
+  \[
+    \E \left| \sum_{i=1}^N a_i X_i \right| \le \left( \E \left( \sum_{i=1}^N a_i X_i \right)^2 \right)^{1/2} = \left( \sum_{i=1}^N a_i^2 \right)^{1/2}.
+  \]
+  For the lower bound, we can use Littlewood's inequality giving
+  \[
+    \left\|\sum_{i=1}^N a_i X_i \right\|_2 \le \left\|\sum_{i=1}^N a_i X_i \right\|_1^{1/4 } \left\|\sum_{i=1}^N a_i X_i \right\|_3^{3/4}. 
+  \]
+  By previous theorem, we have
+  \[
+    \left\|\sum_{i=1}^N a_i X_i \right\|_3^{3/4} \le (CK)^{3/4} p^{3/8} \left( \sum_{i=1}^N a_i^2 \right)^{3/8}
+  \]
+  This gives
+  \[
+    \left(\sum_{i=1}^N a_i^2\right)^{1/2} \le \left\|\sum_{i=1}^N a_i X_i \right\| _1^{1/4 }(\sqrt{3} CK)^{3/4}  \left( \sum_{i=1}^N a_i^2 \right)^{3/8}
+  \]
+  and
+  \[
+    (\sqrt{3} CK)^{-3} \left( \sum_{i=1}^N a_i^2 \right)^{1/2} \le \left\| \sum_{i=1}^N a_i X_i \right\|_1.
+  \]
+\end{proof}
+
+\begin{customExercise}{7}
+  State and prove a version of Khintchine's inequality for $p \in (0, 2)$.
+\end{customExercise}
+\begin{proof}
+  The upper bound comes from Jensen's inequality, as
+  \[
+    \left(\E \left| \sum_{i=1}^N a_i X_i \right|^p\right)^{1/p} \le \left( \E \left( \sum_{i=1}^N a_i X_i \right)^2 \right)^{p/2 \cdot 1/p} = \left( \sum_{i=1}^N a_i^2 \right)^{1/2}.
+  \]
+  For the lower bound, we can use Little's inequality giving
+  \[
+    \left\| \sum_{i=1}^N a_i X_i \right\|_2 \le \left\| \sum_{i=1}^N a_i X_i \right\|_p^\theta \left\| \sum_{i=1}^N a_i X_i \right\|_{4-p}^{1-\theta} 
+  \]
+  where $\theta$ satisfies 
+  \[
+    \frac{1}{2} = \frac{\theta}{p} + \frac{1- \theta}{4-p}.
+  \]
+  This is done by setting $\theta = p/4$.
+
+  Note that $4 - p \ge 2$, so we can apply Exercise 2.6.5 to have
+  \[
+    \left\| \sum_{i=1}^N a_i X_i \right\|_{4-p} \le 2CK \left( \sum_{i=1}^N a_i^2 \right)^{1/2}.
+  \]
+  Then we have
+  \[
+    \frac{\left(\sum_{i=1}^N a_i^2\right)^{1/2}}{(2CK)^{4/p - 1}} \le \left\| \sum_{i=1}^N a_i X_i \right\|_p.
+  \]
+  So, the statement is
+  \[
+    \frac{1}{(2CK)^{4/p - 1}}\left( \sum_{i=1}^N a_i^2 \right)^{1/2} \le \left\| \sum_{i=1}^N a_i X_i \right\|_p \le \left( \sum_{i=1}^N a_i^2 \right)^{1/2}.
+  \]
   
 \end{proof}
 
+\begin{customExercise}{9}
+  Show that, unlike L2-norm, the centering inequality in Lemma 2.6.8 does not hold with $C = 1$.
+\end{customExercise}
+\begin{proof}
+  Consider the random variable 
+  \[
+    X = \begin{cases}
+      1 & \text{with probability }p
+      \\
+      -1 & \text{with probability }1-p
+    \end{cases}
+  \]
+  which satisfies
+  \[
+    \E \exp(X^2/t^2) = \exp(1/t^2)
+  \]
+  and $\|X\|_{\psi_2} = \frac{1}{\sqrt{\log 2}} \approx 1.2011$.
+
+  Now the centered random variable $X - 2p + 1$ satisfies
+  \[
+    \E \exp(X^2/t^2) = p \exp\left( \frac{(2-2p)^2}{t^2} \right) + (1 - p) \exp\left( \frac{(2p)^2}{t^2} \right)
+  \]
+  Let $p = 0.25$, then the smallest such $t$ is 
+  \[
+    \frac{0.5}{\sqrt{0.166078}} \approx 1.22691
+  \]
+  which satisfies this.
+\end{proof}
+
+\setcounter{subsection}{7}
 \end{document}
