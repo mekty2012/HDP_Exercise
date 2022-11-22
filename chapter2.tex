@@ -952,4 +952,131 @@
 \end{proof}
 
 \setcounter{subsection}{7}
+
+\begin{customExercise}{2}
+  Prove the equivalence of properties (i)-(iv) in Proposition 2.7.1 by modifying the proof of Proposition 2.5.2.  
+\end{customExercise}
+\begin{proof}
+  $(i) \Rightarrow (ii)$
+  Assume that property (i) holds. By homogenity, we can rescale $X$ to have $K_1 = 1$.
+  We can rewrite the moment with integral identity to obtain
+  \begin{align*}
+    \E |X|^p 
+    &= \int_0^\infty P\left( |X| \ge t \right) p t^{p-1} dt
+    \\
+    &\le 2p \int_0^\infty t^{p-1} \exp\left(- t\right) dt
+    \\
+    &= 2 p \Gamma(p)
+    \\
+    &\le 2 p p^p
+  \end{align*}
+  and taking $p$-th root gives
+  \[
+    \|X\|_{L^p} \le 2^{1/p} p^{1/p} p \le e^{2/e}p.
+  \]
+  
+  $(ii) \Rightarrow (iii)$
+  Assume that (ii) holds, and by rescaling we have $K_2 = 1$.
+  By the Taylor series and applying the Monotone convergence theorem, we have
+  \[
+    \E \exp(\lambda |X|) = \E \left( 1 + \sum_{p=1}^\infty \frac{(\lambda |X|)^p}{p!} \right) = 1 + \sum_{p=1}^\infty \frac{\lambda^p \E |X|^p}{p!}.
+  \]
+  By assumption we have $\E |X|^p \le p^p$ and the Stirling's approximation gives $p! \ge (p/e)^p$, we have
+  \[
+    \E \exp(\lambda |X|) \le 1 + \sum_{p=1}^\infty \frac{(\lambda p)^p}{(p/e)^p} = \sum_{p=0}^\infty (\lambda e)^p = \frac{1}{1- \lambda e}
+  \]
+  when $e \lambda < 1$.
+  Finally if $e\lambda < 1/2$, we have the numerical inequality $1 / (1-x) \le e^{2x}$:
+  \[
+    \E \exp(\lambda |X|) \le \exp(2 \lambda e)
+  \]
+  for all $\lambda \le 1/2e$.
+
+  $(iii) \Rightarrow (iv)$
+  This is trivial, since it is enough to set $K_4$ so that 
+  \[
+    K_4 \ge K_3 \text{ and }K_4 \ge \frac{K_3}{\log 2}.
+  \]
+
+  $(iv) \Rightarrow (i)$
+  Again we can assume that $K_4 = 1$. Then we have
+  \begin{align*}
+    P(|X| \ge t) 
+    &= P\left( e^{|X|} \ge e^{t} \right)
+    \\
+    &\le e^{-t} \E e^{|X|}
+    \\
+    &\le 2e^{-t}.
+  \end{align*}
+\end{proof}
+
+\begin{customExercise}{3}
+  More generally, consider the class of distributions whose tail decay is of the type $\exp(-ct^\alpha)$ or faster.
+  Here $\alpha = 2$ corresponds to sub-gaussian distributions and $\alpha = 1$ to sub-exponential random distributions. 
+  State and prove a version of Proposition 2.7.1 for such distributions.
+\end{customExercise}
+\begin{proof}
+  \begin{enumerate}
+    \item $P(|X| \ge t) \le \exp\left( - \frac{t^\alpha}{K_1} \right)$.
+    \item $\E |X|^p \le K_2 p^{1/\alpha}$.
+    \item $\E \exp(\lambda^\alpha |X|^\alpha) \le \exp(K_3^\alpha \lambda^\alpha)$ for all $\lambda$ such that $|\lambda| \le \frac{1}{K_3}$.
+    \item $\E \exp(X^\alpha / K_4^\alpha) \le 2$.
+    \item If zero mean, $\E \exp(\lambda X) \le \exp(K_5^\alpha \lambda^\alpha)$ for all $\lambda \in \R$.
+  \end{enumerate}
+
+
+  $(i) \Rightarrow (ii)$
+  Assume that property (i) holds. By homogenity, we can rescale $X$ to have $K_1 = 1$.
+  We can rewrite the moment with integral identity to obtain
+  \begin{align*}
+    \E |X|^p 
+    &= \int_0^\infty P\left( |X| \ge t \right) p t^{p-1} dt
+    \\
+    &\le 2p \int_0^\infty t^{p-1} \exp\left(- t^\alpha\right) dt
+    \\
+    &= \frac{2p}{\alpha} \int_0^\infty s^{p/\alpha - 1} \exp\left(- s\right) ds
+    \\
+    &= 2 \frac{p}{\alpha} \Gamma(p/\alpha)
+    \\
+    &\le 2 p (p/\alpha)^{p/\alpha}
+  \end{align*}
+  and taking $p$-th root gives
+  \[
+    \|X\|_{L^p} \le 2^{1/p} p^{1/p} (p / \alpha)^{1/\alpha} \le \frac{1}{\alpha^{1/\alpha}} e^{2/e} p^{1/\alpha}.
+  \]
+  
+  $(ii) \Rightarrow (iii)$
+  Assume that (ii) holds, and by rescaling we have $K_2 = 1$.
+  By the Taylor series and applying the Monotone convergence theorem, we have
+  \[
+    \E \exp(\lambda^\alpha |X|^\alpha) = \E \left( 1 + \sum_{p=1}^\infty \frac{(\lambda^\alpha |X|^\alpha)^p}{p!} \right) = 1 + \sum_{p=1}^\infty \frac{\lambda^{\alpha p} \E |X|^{\alpha p}}{p!}.
+  \]
+  By assumption we have $\E |X|^{\alpha p} \le (\alpha p)^p$ and the Stirling's approximation gives $p! \ge (p/e)^p$, we have
+  \[
+    \E \exp(\lambda^\alpha |X|^\alpha) \le 1 + \sum_{p=1}^\infty \frac{(\lambda^\alpha \alpha p)^p}{(p/e)^p} = \sum_{p=0}^\infty (\alpha \lambda^\alpha e)^p = \frac{1}{1- \alpha \lambda^\alpha e}
+  \]
+  when $\alpha \lambda^\alpha e < 1$.
+  Finally if $\alpha \lambda^\alpha e < 1/2$, we have the numerical inequality $1 / (1-x) \le e^{2x}$:
+  \[
+    \E \exp(\lambda^\alpha |X|^\alpha) \le \exp(2 \alpha \lambda^\alpha e)
+  \]
+  for all $\lambda \le \left(\frac{e}{2\alpha}\right)^{1/\alpha}$.
+
+  $(iii) \Rightarrow (iv)$
+  This is trivial, since it is enough to set $K_4$ so that 
+  \[
+    K_4 \ge K_3 \text{ and }K_4 \ge \frac{K_3}{(\log 2)^{1/\alpha}}.
+  \]
+
+  $(iv) \Rightarrow (i)$
+  Again we can assume that $K_4 = 1$. Then we have
+  \begin{align*}
+    P(|X| \ge t) 
+    &= P\left( \exp(|X|^\alpha) \ge \exp(t^\alpha) \right)
+    \\
+    &\le e^{-t^\alpha} \E \exp(|X|^\alpha)
+    \\
+    &\le 2e^{-t^\alpha}.
+  \end{align*}
+\end{proof}
 \end{document}
