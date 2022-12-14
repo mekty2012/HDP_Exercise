@@ -1021,7 +1021,6 @@
     \item $\E |X|^p \le K_2 p^{1/\alpha}$.
     \item $\E \exp(\lambda^\alpha |X|^\alpha) \le \exp(K_3^\alpha \lambda^\alpha)$ for all $\lambda$ such that $|\lambda| \le \frac{1}{K_3}$.
     \item $\E \exp(X^\alpha / K_4^\alpha) \le 2$.
-    \item If zero mean, $\E \exp(\lambda X) \le \exp(K_5^\alpha \lambda^\alpha)$ for all $\lambda \in \R$.
   \end{enumerate}
 
 
@@ -1079,4 +1078,142 @@
     &\le 2e^{-t^\alpha}.
   \end{align*}
 \end{proof}
+
+\begin{customExercise}{4}
+  Argue that the bound in property (iii) in Proposition 2.7.1 cannot be extended to all $\lambda$ such that $|\lambda| \le 1 / K_3$.
+\end{customExercise}
+\begin{proof}
+  Note that $X^2$ for $X \sim \cN(0, 1)$ is sub-exponential but not sub-gaussian, since its moment is exactly square of $X$. 
+  Then, we can derive following computation of MGF as
+  \begin{align*}
+    \E \exp(\lambda |X^2|) 
+    &= \frac{1}{\sqrt{2\pi}}\int \exp\left( - \frac{1}{2} x^2 + \lambda x^2 \right) dx 
+    \\
+    &= \frac{1}{\sqrt{2\pi}} \frac{\sqrt{\pi}}{\sqrt{1/2 - \lambda}}
+    \\
+    &= \frac{1}{\sqrt{1 - 2\lambda}}
+  \end{align*}
+  for $\lambda < 1/2$.
+
+  Now if we compare this function and $\exp(a\lambda)$ as the function of $\lambda$, to have the inequality holding at neighborhood of 0, we require the derivative at zero equals which require $a = 1$.
+  However, doing so gives 
+  \[
+    \frac{1}{\sqrt{1 - 2 \lambda}} \ge \exp(\lambda)
+  \]
+  for $\lambda \in [-1, 1]$, so we can't have desired bound.
+\end{proof}
+
+\begin{customExercise}{10}
+  Prove an analog of the centering lemma 2.6.8 for subexponential random variables X:
+  \[
+    \|X - \E X\|_{\psi_1} \le C \|X\|_{\psi_1}.
+  \]
+\end{customExercise}
+\begin{proof}
+  We will first prove the similar result as Exercise 2.5.7, that
+  \[
+    \|X + Y\|_{\psi_1} \le \|X\|_{\psi_1} + \|Y\|_{\psi_1}.
+  \]
+  Using the convexity of $\exp$, we have
+  \begin{align*}
+    \E \exp \left( \frac{|X + Y|}{a+b} \right) 
+    &\le \E \exp \frac{|X| + |Y|}{a+b}
+    \\
+    &\le \frac{a}{a+b} \E \exp \frac{|X|}{a} + \frac{b}{a+b} \E \exp \frac{|Y|}{b}
+  \end{align*}
+  and plugging in the $a = \|X\|_{\psi_1}$ and $\|Y\|_{\psi_1}$ gives the result.
+  
+  Using this, we have
+  \[
+    \|X - \E X\|_{\psi_1} \le \|X\|_{\psi_1} + \|\E X\|_{\psi_1}
+  \]
+  and the sub-exponential norm of constant can be bounded as
+  \begin{align*}
+    &\|\E X\|_{\psi_1} = \frac{|\E X|}{\log 2} 
+    \\
+    \le &\frac{\E |X|}{\log 2} = \frac{\|X\|_1}{\log 2} 
+    \\
+    \le &C \|X\|_{\psi_1}
+  \end{align*}
+  using the moment bound.
+\end{proof}
+
+\begin{customExercise}{11}
+  Show that $\|X\|_{\psi}$ is indeed a norm on the space $L_{\psi}$.
+\end{customExercise}
+\begin{proof}
+  The subadditivity can be shown using the convexity, as
+  \begin{align*}
+    \E \psi \left( \frac{|X + Y|}{a+b} \right)
+    &\le \E \psi \left( \frac{|X| + |Y|}{a+b} \right)
+    \\
+    &\le \frac{a}{a+b} \E \psi \left( \frac{|X|}{a}\right) + \frac{b}{a+b} \E \psi \left( \frac{|Y|}{b}\right)
+  \end{align*}
+  with $a = \|X\|_{\psi}$ and $b = \|Y\|_{\psi}$. 
+
+  For the positive homogenity, 
+  \[
+    \E \psi \left( \frac{|aX|}{at} \right) \le 1 \Leftrightarrow \E \psi \left( \frac{|X|}{t} \right) \le 1
+  \]
+  so we have same norm.
+
+  For the positive definiteness, we actually need quotient space.
+
+  Finally the Non-negativity is immediate since we choose $t$ from $t > 0$.
+\end{proof}
+
+\setcounter{subsection}{8}
+
+\begin{customExercise}{5}
+  Let $X$ be a zero-mean random variable such that $|X| \le K$. Prove the following bound on the MGF of $X$:
+  \[
+    \E \exp(\lambda X) \le \exp(g(\lambda) \E X^2)\quad \text{ where }g(\lambda) = \frac{\lambda^2/2}{1 - |\lambda| K/3}
+  \]
+  provided that $|\lambda| < 3/K$.
+\end{customExercise}
+\begin{proof}
+  Here, ignoring the denominator, $g(\lambda)$ is the second order Taylor expansion of $e^\lambda$, so we can compare following two functions
+  \[
+    e^x \stackrel{?}{\le} 1 + x + \frac{x^2/2}{1 - |x|/3}.
+  \]
+  Then we can show that this holds if $|x| < 3$.
+
+  Applying this to MGF gives
+  \begin{align*}
+    \E \exp(\lambda X) 
+    &\le \E \left[ 1 + \lambda X + \frac{\lambda^2 X^2 /2}{1 - |\lambda X|/3} \right]
+    \\
+    &= 1 + \lambda \E X + \E \left[ \frac{\lambda^2 X^2 /2}{1 - |\lambda X|/3} \right]
+    \\
+    &\le 1 + \lambda \E X + \E \left[ \frac{\lambda^2 X^2 /2}{1 - |\lambda| K/3} \right]
+    \\
+    &= 1 + g(\lambda) \E X^2
+    \\
+    &\le \exp(g(\lambda) \E X^2).
+  \end{align*}
+  where we used the first order Taylor expansion.
+\end{proof}
+
+\begin{customExercise}{6}
+  Deduce Theorem 2.8.4 from the bound in Exercise 2.8.5. 
+\end{customExercise}
+\begin{proof}
+  We will prove for one side, 
+  \[
+    P \left( \sum_{i=1}^n X_i \ge t \right) \le \exp \left( - \frac{t^2/2}{\sigma^2 + Kt/3} \right)
+  \]
+  We multiply $\lambda$ to both side, and exponentiate this to have
+  \[
+    P \left( \sum_{i=1}^n X_i \ge t \right) = P \left( \prod_{i=1}^n \exp(\lambda X_i) \ge \exp(\lambda t) \right) \le \exp(- \lambda t) \prod_{i=1}^n \E \exp(\lambda X_i)
+  \]
+  Using the exercise 2.8.5, we have
+  \[
+    p \le \exp\left(-\lambda t + g(\lambda) \sigma^2\right)
+  \]
+  and taking $\lambda = \frac{t}{\sigma^2 + K t/3}$ gives
+  \[
+    p \le \exp\left( - \frac{t^2}{\sigma^2 + K t/3} + \frac{t^2/2}{\sigma^2 + Kt/3} \right) = \exp \left(-\frac{t^2/2}{\sigma^2 + Kt/3} \right).
+  \]
+\end{proof}
+
 \end{document}
