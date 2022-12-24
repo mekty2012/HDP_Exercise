@@ -1,0 +1,153 @@
+\documentclass[a4paper]{article}
+\usepackage{amsmath,amssymb,amsthm,tikz,hyperref}
+\usepackage{bbm}
+
+\newtheorem{exercise}{Exercise}[subsection]
+
+\newcommand*{\E}{\mathbb{E}}
+\newcommand*{\R}{\mathbb{R}}
+\newcommand*{\cN}{\mathcal{N}}
+\newcommand*{\Var}{\mathrm{Var}}
+\newcommand*{\Cov}{\mathrm{Cov}}
+\newcommand*{\esssup}{\mathrm{ess}\,\sup}
+\newcommand*{\ind}[1]{\mathbbm{1}_{[{#1}]}}
+\newcommand*{\defeq}{\stackrel{\mathrm{def}}{=}}
+
+\renewcommand{\theenumi}{(\alph{enumi})}
+\makeatletter
+
+\newenvironment{customExercise}[1]
+ {\count@\c@exercise
+ \global\c@exercise#1 %
+   \global\advance\c@exercise\m@ne
+   \exercise}
+  {\endexercise
+  \global\c@exercise\count@}
+
+\title{Random Vectors in High Dimensions}
+\author{Taeyoung Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\setcounter{section}{3}
+\setcounter{subsection}{1}
+
+\begin{customExercise}{4}
+  \begin{enumerate}
+    \item Deduce from Theorem 3.1.1 that 
+    \[
+      \sqrt{n} - C K^2 \le \E \|X\|_2 \le \sqrt{n}+ CK^2.
+    \]
+    \item Can $CK^2$ be replaced by $o(1)$, a quantity that vanishes as $n \to \infty$?
+  \end{enumerate}
+\end{customExercise}
+\begin{proof}
+  \begin{enumerate}
+    \item We can bound the expectation's deviation as
+    \begin{align*}
+      \E \|X\|_2 - \sqrt{n} 
+      &= \int_0^\infty P(\|X\|_2 - \sqrt{n} \ge t) dt 
+      \\
+      &\le \int_0^\infty 2 \exp \left( - \frac{ct^2}{K^4} \right) dt
+      \\
+      &= 2 \frac{\sqrt{\pi} K^2}{\sqrt{c}}
+    \end{align*}
+    and the lower side also holds.
+    \item The upper bound $\E \|X\|_2 \le \sqrt{n}$ is immediate with Jensen's inequality.
+    For the lower bound, let's consider the term similar to variance, $\E (\|X\|_2 - \sqrt{n})^2$, which is
+    \[
+      \E (\|X\|_2 - \sqrt{n})^2 = \E \|X\|_2^2 - 2 \sqrt{n} \E\|X\|_2 + n = 2 (n - \sqrt{n} \E\|X\|_2).
+    \]
+    Theorem 3.1.1 shows that LHS is bounded, since it is second moment of the sub-gaussian random variable.
+    We have
+    \[
+      \E \|X\|_2 \ge \sqrt{n} - \frac{1}{2\sqrt{n}} CK^4
+    \]
+    which shows the result.
+  \end{enumerate}
+\end{proof}
+
+\begin{customExercise}{5}
+  Deduce from Theorem 3.1.1 that
+  \[
+    \mathrm{Var}(\|X\|_2) \le C K^4.
+  \]
+\end{customExercise}
+\begin{proof}
+  By centering lemma, we know that $\|\|X\|_2 - \E \|X\|_2 \|_{\psi_2} \le C_1 K^2$.
+  Then by the (2) of Proposition 2.7.1, the second moment is bounded as $C_2 K^4$, proving the result.
+\end{proof}
+
+\begin{customExercise}{6}
+  Let $X = (X_1, \ldots, X_n) \in \R^n$ be a random vector with independent coordinates $X_i$ that satisfy $\E X_i^2 = 1$ and $\E X_i^4 \le K^4$.
+  Show that 
+  \[
+    \mathrm{Var}(\|X\|_2) \le C K^4.
+  \]
+\end{customExercise}
+\begin{proof}
+  Let's first see the variance of $\|X\|_2^2$, as
+  \begin{align*}
+    \E \left[ (\|X\|_2^2 - n)^2 \right] &= \E \left[ \|X\|_2^4 - 2n \|X\|_2^2 + n^2 \right]
+    \\
+    &= \E \left[ \left(\sum_{i=1}^n X_i^2\right)^2 - 2 n \sum_{i=1}^n X_i^2 + n^2 \right]
+    \\
+    &= \E \left[ \left(\sum_{i=1}^n X_i^2\right)^2 \right] - n^2
+    \\
+    &= \E \left[ \sum_{i=1}^n X_i^4 + \sum_{\substack{i,j=1 \\ i \neq j}}^n X_i^2 X_j^2 \right] - n^2
+    \\
+    &\le n K^4 + n(n-1) - n^2 
+    \\
+    &= nK^4 - n \le nK^4.
+  \end{align*}
+  Then we can derive following inequality as
+  \begin{align*}
+    \E \left[ (\|X\|_2^2 - n)^2 \right] &= \E \left[ (\|X\|_2 - \sqrt{n})^2 (\|X\|_2 + \sqrt{n})^2 \right]
+    &\ge n \E \left[ (\|X\|_2 - \sqrt{n})^2 \right]
+  \end{align*}
+  which gives $\E [\|X\|_2 - \sqrt{n}] \le K^4$.
+  Finally, using the inequality of the variance, we can deduce that
+  \[
+    \E [(\|X\|_2 - \E \|X\|_2 )^2] \le \E [(\|X\|_2 - \sqrt{n})^2] \le K^4.
+  \]
+\end{proof}
+
+\begin{customExercise}{7}
+  Let $X = (X_1, \ldots, X_n) \in \R^n$ be a random vector with independent coordinates $X_i$ having continuous distributions.
+  Assume that the densities of $X_i$ are uniformly bounded by 1.
+  Show that, for any $\epsilon > 0$, we have
+  \[
+    P \left( \|X\|_2 \le \epsilon \sqrt{n} \right) \le (C\epsilon)^n.
+  \]
+\end{customExercise}
+\begin{proof}
+  We will instead use the following probability
+  \[P(\|X\|_2 \le \epsilon \sqrt{n}) = P\left(\sum_{i=1}^n X_i^2 \le \epsilon^2 n \right).\]
+  Now if we compute the MGF of $X_i^2$, we have
+  \begin{align*}
+    \E \exp(- tX^2) &= \int_{\R} p(x) \exp(- tx^2) dx
+    \\
+    &\le \int_{\R} \exp(-tx^2) dx 
+    \\
+    &= \frac{\sqrt{\pi}}{\sqrt{t}}.
+  \end{align*}
+  Then using this bound, we can bound the probability as
+  \begin{align*}
+    P\left(\sum_{i=1}^n X_i^2 \le \epsilon^2 n \right) &= P \left( -\sum_{i=1}^n t X_i^2 \ge -t \epsilon^2 n \right)
+    \\
+    &= P\left( \exp\left( - \sum_{i=1}^n t X_i^2 \right) \ge \exp(-t \epsilon^2 n) \right)
+    \\
+    &\le \exp\left( t \epsilon^2 n \right) \E \left[ \exp\left( - \sum_{i=1}^n t X_i^2 \right) \right]
+    \\
+    &= \exp(t \epsilon^2 n) \prod_{i=1}^n \E \left[ \exp(- tX_i^2) \right]
+    \\
+    &\le \exp(t \epsilon^2 n) \left( \frac{\sqrt{\pi}}{\sqrt{t}} \right)^n.  
+  \end{align*}
+  Setting $t = 1/2\epsilon^2$ gives the minimum, as
+  \[
+    p \le \exp(n/2) \left( \sqrt{2\pi} \epsilon \right)^n = \left( \sqrt{2 e \pi} \epsilon \right)^n.
+  \]
+\end{proof}
+\end{document}
