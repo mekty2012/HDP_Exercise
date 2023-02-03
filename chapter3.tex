@@ -298,6 +298,617 @@
   Show that $X$ has a multivariate normal distribution if and only if every one-dimensional marginal $\langle X, \theta \rangle$, $\theta \in \R^n$, has a (univariate) normal distribution.
 \end{customExercise}
 \begin{proof}
+  The only-if side is straightforward, we can rewrite $X$ as
+  \[
+    \Sigma^{1/2} u + \mu
+  \]
+  which then gives
+  \begin{align*}
+    \langle \Sigma^{1/2} u + \mu, \theta \rangle &= \langle \Sigma^{1/2} u, \theta \rangle + \langle \mu, \theta \rangle
+    \\
+    &= (\Sigma^{1/2} u)^\intercal \theta + \langle \mu, \theta\rangle 
+    \\
+    &= u^\intercal (\Sigma^{1/2})^\intercal \theta + \langle \mu, \theta \rangle
+    \\
+    &= \langle u, (\Sigma^{1/2})^\intercal \theta \rangle + \langle \mu, \theta \rangle
+  \end{align*}
+  where the first value is Gaussian by Exercise 3.3.3(a) and second value is constant.
+
+  For the if side, it is enough to show that there exists some Gaussian distribution $\cN(\mu, \Sigma)$ that its linear marginal has same distribution to $X$'s linear marginal.
+  This can be shown using the inverse transform of characteristic function, since characteristic function of random vector is defined as $\E \exp(i t \cdot x)$, the linear marginal.
+
+  First, we can assume that $X$ has zero mean, which is achievable by subtracting its mean for unknown Gaussian function also.
+  Then we can recursively reconstruct the $\Sigma$, as
+  \[
+    \Sigma_{ii} = \Var(X_i)
+  \]
+  and 
+  \[
+    \Sigma_{ij} = \frac{\Var(X_i + X_j) - \Var(X_i) - \Var(X_j)}{2}.
+  \]
+  This gives the Gaussian random variable, whose linear marginal has same distribution to $X$.
+\end{proof}
+
+\begin{customExercise}{5}
+  Let $X \sim \cN(0, I_n)$.
+  \begin{enumerate}
+    \item Show that, for any fixed vectors $u, v \in \R^n$, we have 
+    \[\E \left[ \langle X, u\rangle \langle X, v\rangle \right]= \langle u, v\rangle.\] 
+    \item Given a vector $u \in \R^n$, consider the random variable $X_u \defeq \langle X, u\rangle$.
+    From Exercise 3.3.3 we know that $X_u \sim \cN(0, \|u\|_2^2)$.
+    Check that 
+    \[
+      \|X_u - X_v\|_{L^2} = \|u - v\|_2
+    \]
+    for any fixed vectors $u, v\in \R^n$.
+  \end{enumerate}
+\end{customExercise}
+\begin{proof}
+  \begin{enumerate}
+    \item Consider the random vector $M X$ where $M \in \R^{n \times n}$ has its first two row as $u$ and $v$, and rest zero.
+    Then by Exercise 3.2.2 (a), this random vector has mean zero and covariance $\Sigma$ which have
+    \[
+      \Sigma_{11} = \|u\|^2,\quad \Sigma_{12} = \langle u, v\rangle,\quad \Sigma_{22} = \|v\|_2^2.
+    \] 
+    Then the value we'd like to compute is simply the covariance, which is $\langle u, v \rangle$.
+    \item We have
+    \[  
+      X_u - X_v = \langle X, u \rangle - \langle X, v \rangle = \langle X, u - v \rangle
+    \]
+    which has zero mean, so the L2 norm is square root of variance.
+    By Exercise 3.3.3 (a), this has variance $\|u - v\|_2^2$.
+  \end{enumerate}
+\end{proof}
+
+\begin{customExercise}{6}
+  Let $G$ be an $m \times n$ Gaussian random matrix, i.e., the entries of $G$ are independent $\cN(0, 1)$ random variables. 
+  Let $u, v \in \R^n$ be unit orthogonal vectors. 
+  Prove that $Gu$ and $Gv$ are independent $\cN(0, I_m)$ random vectors.
+\end{customExercise}
+\begin{proof}
+  It is enough to show the case when $m=1$, since each entries of $Gu$ and $Gv$ are by definition independent and identical.
+  By Exercise 3.3.5(a), these two random variables have covariance $\langle u, v\rangle = 0$, so is independent.
+\end{proof}
+
+\begin{customExercise}{7}
+  Let us represent $g \sim \cN(0, I_n)$ in polar form as 
+  \[
+    g = r \theta
+  \]
+  where $r = \|g\|_2$ is the length and $\theta = g / \|g\|_2$ is the direction of $g$. Prove the following:
+  \begin{enumerate}
+    \item The length $r$ and direction $\theta$ are independent random variables.
+    \item The direction $\theta$ is uniformly distributed on the unit sphere $S^{n-1}$.
+  \end{enumerate}
+\end{customExercise}
+\begin{proof}
+  Let's first see the p.d.f. of $g$, which is
+  \[
+    p(x) = \frac{1}{(2\pi)^{n/2}} \exp \left( -\frac{\sum_{i=1}^n g_i^2}{2} \right).
+  \]
+  Using the transform $g = r\theta$, we can rewrite it as
+  \[
+    p(r, \theta) = \frac{r}{(2\pi)^{n/2}}\exp\left( -\frac{r^2}{2} \right)
+  \]
+  which can be shown that $r$ and $\theta$ are independent.
+  And, since it does not depend on $\theta$, we can deduce that $p(\theta)$ is constant over its support, hence is uniformly distributed.
+\end{proof}
+
+\begin{customExercise}{9}
+  Show that $\{u_i\}_{i=1}^N$ is a tight frame in $\R^n$ with bound $A$ if
+  \[
+    \sum_{i=1}^N u_i u_i^\intercal = A I_n.
+  \]
+\end{customExercise}
+\begin{proof}
+  First, we can rewrite the inner product as
+  \[
+    \langle u_i, x\rangle = \sum_{j=1}^n u_{i,j} x_j.
+  \]
+  Then the square is 
+  \[
+    \langle u_i, x\rangle^2 = \sum_{j,k=1}^n u_{i,j} u_{i,k} x_j x_k = \left\langle u_i u_i^\intercal, x x^\intercal  \right\rangle
+  \]
+  And using the linearity of inner product, we can derive that
+  \[
+    \sum_{i=1}^N \langle u_i, x\rangle^2 = \left\langle \sum_{i=1}^N u_i u_i^\intercal, x x^\intercal \right\rangle = \left\langle A I_n, x x^\intercal \right\rangle = \sum_{i=1}^d A x_i^2 = A \|x\|^2.
+  \]
+\end{proof}
+
+\setcounter{subsection}{4}
+
+\begin{customExercise}{3}
+  \begin{enumerate}
+    \item Let $X = (X_1, \ldots, X_n) \in \R^n$ be a random vector with sub-gaussian coordinates $X_i$.
+    Show that $X$ is a sub-gaussian random vector.
+    \item Nevertheless, find an example of an random vector $X$ with 
+    \[
+      \|X\|_{\psi_2} \gg \max_{i \le n} \|X_i\|_{\psi_2}.
+    \]
+  \end{enumerate}
+\end{customExercise}
+\begin{proof}
+  \begin{enumerate}
+    \item We can simply prove as
+    \begin{align*}
+      \|\langle X, x\rangle\|_{\psi_2} &= \left\| \sum_{i=1}^n X_i x_i \right\|_{\psi_2}
+      \\
+      &\le \sum_{i=1}^n |x_i| \|X_i\|_{\psi_2}
+      \\
+      &\le \sum_{i=1}^n \|X_i\|_{\psi_2}.
+    \end{align*}
+    \item If we take $X_1 = \ldots = X_n = \mathrm{Unif}(\{-1, 1\})$, then we have $\|X_i\|_{\psi_2} = \sqrt{\log 2}$.
+    However if we choose $x = \frac{1}{\sqrt{n}} \mathbf{1}_n$, then $\langle X, x \rangle \sim \mathrm{Unif}(\{-\sqrt{n}, \sqrt{n}\})$, which gives $\|X\|_{\psi_2} \ge \sqrt{n \log 2}$.
+  \end{enumerate}
+\end{proof}
+
+\begin{customExercise}{4}
+  Show that
+  \[
+    \|X\|_{\psi_2} \asymp \sqrt{\frac{n}{\log n}}
+  \]
+  where $X$ is the $\mathrm{Unif}(\{\sqrt{n}e_1, \ldots, \sqrt{n} e_n\})$.
+\end{customExercise}
+\begin{proof}
+  We first have
+  \begin{align*}
+    \E \exp\left( \frac{\langle X, x\rangle^2}{K^2} \right) 
+    &= \frac{1}{n} \sum_{i=1}^n \exp\left( \frac{n x_i^2}{K^2} \right) 
+    \\
+    &\le \frac{1}{n} \left(\exp\left( \frac{n}{K^2} \sum_{i=1}^n x_i^2\right) + (n-1) \exp(0)\right)
+    \\
+    &= \frac{1}{n} \left(\exp\left( \frac{n}{K^2} \right) + n-1 \right).
+  \end{align*}
+  Here, we used Karamata's inequality with using the sequence $(\sum_i x_i, 0, \ldots, 0)$.
+  So setting $K \ge \sqrt{\frac{n}{\log (n + 1)}}$ bounds this expectation by 2.
+
+  Now if we set $x = e_1$, we can explicitly compute it as
+  \[
+    \E \exp\left( \frac{\langle X, e_i \rangle^2}{K^2} \right) = \frac{1}{n} \left( \exp\left( \frac{n}{K^2} \right)+ (n - 1) \right)
+  \]
+  which is same as the bound we've computed, so we have
+  \[
+    \|X\|_{\psi_2} = \sqrt{\frac{n}{\log (n + 1)}}.
+  \]
+\end{proof}
+
+\begin{customExercise}{6}
+  Let $X$ be an isotropic random vector supported in a finite set $T\subset \R^n$.
+  Show that in order $X$ to be sub-gaussian with $\|X\|_{\psi_2} = O(1)$, the cardinality of the set must be exponentially large in $n$:
+  \[
+    |T| \ge \exp(cn).
+  \]
+\end{customExercise}
+\begin{proof}
+  Suppose that the norm of the vectors in $T$ scales as $\sqrt{n}$, so that $\max_{v \in T} \|v\| = C \sqrt{n}$.
+  Under this assumption, we can show the desired inequality as
+  \[
+    n = \E \|X\|^2 \le \E \sup_{v \in T} \langle X, v\rangle \le c C \sqrt{n \log |T|}
+  \]
+  by Exercise 2.5.10, which results
+  \[
+    |T| \ge \exp\left( \frac{n}{c^2 C^2} \right).
+  \]
+  To use idea, we will first split the random vector as
+  \begin{align*}
+    Y_1 &\defeq X \mathbb{I}_{\|X\| \le C \sqrt{n}},
+    \\
+    Y_2 &\defeq X \mathbb{I}_{\|X\| > C \sqrt{n}}.
+  \end{align*}
+  However, this $Y_1$ is no more isotropic.
+  What we'd like to show is, that there exists some $M$ that $MY_1$ is isotropic, where $M$ has bounded norm.
+  In specific, we will show that $\E Y_1 Y_1^\intercal \succeq \frac{1}{2} I_n$.
+
+  We can show this by proving that $\E Y_2 Y_2^\intercal \preceq \frac{1}{2} I_n$.
+  And by following identity,
+  \begin{align*}
+    \theta^\intercal \E Y_2 Y_2^\intercal \theta = \E \langle \theta, Y_2\rangle^2
+  \end{align*}
+  it is enough to show that
+  \[
+    \E \langle \theta, Y_2 \rangle^2 \le \frac{\|\theta\|^2}{2} = \frac{1}{2}
+  \]
+  for all $\theta \in \mathbb{S}^{n-1}$.
+
+  We first use the CS-inequality to remove the indicator,
+  \begin{align*}
+    &\E \langle \theta, X \rangle^2 \mathbb{I}_{\|X\| > C\sqrt{n}} 
+    \\ 
+    \le &\left( \E \langle \theta, X \rangle^4 \E \mathbb{I}_{\|X\| > C \sqrt{n}}^4 \right)^{1/2}
+    \\
+    = &\left( \E \langle \theta, X \rangle^4 P(\|X\| > C \sqrt{n}) \right)^{1/2}.
+  \end{align*}
+  First term can be bounded using moment bound on the sub-gaussian random vector, as
+  \[
+    \E \langle \theta, X \rangle^4 \le 2 c_1 C
+  \]
+  and the second term can be bounded through Markov's inequality,
+  \[
+    P(\|X\|^2 > C^2 n) \le \frac{\E \|X\|^2}{C^2 n} = \frac{1}{C^2}.
+  \]
+  So, it is enough to set $\frac{2c_1}{C} = \frac{1}{4}$ to show that $\E Y_1 Y_1^\intercal \succeq \frac{1}{2} I_n$.
+
+  Then there exist some $M$ such that $MY_1$ is isotropic with $\|M\| \le 2$.
+  So, $\|M Y_1\| \le 16c_1$ and $\|\langle MY_1, \theta\rangle\|_{\psi_2} \le 2 c$, therefore applying our first result gives
+  \[
+    n = \E \|M Y_1\|^2 \le \E \sup_{v \in \mathrm{supp}(MY_1)} \langle MY_1, v\rangle \le 32 c c_1 \sqrt{n \log |T|},
+  \]
+  and the final bound as
+  \[
+    |T| \ge \exp\left( \frac{n}{2^10 c^2 c_1^2} \right).
+  \]
+\end{proof}
+
+\begin{customExercise}{7}
+  Show that a random vector
+  \[
+    X \sim \mathrm{Unif}(B(0, \sqrt{n}))
+  \]
+  is sub-gaussian and 
+  \[
+    \|X\|_{\psi_2} \le C.
+  \]
+\end{customExercise}
+\begin{proof}
+  By the rotation invariance, let's only consider $x = e_1$.
+  We can write $X = r \theta$, where $\theta \sim \mathrm{Unif}(\sqrt{n}S^{n-1})$ and $r$ is the radius, satisfying $r \le 1$ almost surely.
+
+  Then for the marginal,
+  \[
+    P(|\langle X, \rangle| \ge t) = P\left(|\langle\theta, x \rangle| \ge \frac{t}{r}\right) \le P(|\langle \theta, x\rangle | \ge t) \le 4 \exp(- c' t^2).
+  \]
+\end{proof}
+
+\begin{customExercise}{9}
+  Consider a ball of the $\ell_1$ norm in $\R^n$:
+  \[
+    K \defeq \{ x \in \R^n : \|x\|_1 \le r \}.
+  \]
+  \begin{enumerate}
+    \item Show that the uniform distribution on $K$ is isotropic for $r \sim n$.
+    \item Show that the sub-gaussian norm of this distribution is not bounded by an absolute constant as the dimension $n$ grows.
+  \end{enumerate}
+\end{customExercise}
+\begin{proof}
+  \begin{enumerate}
+    \item Since the distribution is symmetric, we can see that the covariance between different coordinate is zero.
+    
+    Now for the variance, we can explicitly compute the p.d.f. of $x_1$, as
+    \[
+      p(x_1) = \begin{cases}
+        \frac{n}{2r^n} (r - |x_1|)^{n-1} & \text{if }|x_1| \le r,
+        \\
+        0 &\text{if } |x_1| > r.
+      \end{cases}
+    \]
+    Then the variance can be computed as
+    \begin{align*}
+      \E x_1^2 &= \int_0^r \frac{n}{r^n} t^2 (r - t)^{n-1} dt
+      \\
+      &= nr^2 \int_0^1 t^2 (1 - t)^{n-1} dt
+      \\
+      &= \frac{2r^2}{(n+1) (n+2)}
+    \end{align*}
+    so we have the variance 1 for 
+    \[
+      r = \sqrt{\frac{(n+1)(n+2)}{2}} \sim n.
+    \]
+    \item We will see the asymptotic growth of moment, 
+    \begin{align*}
+      \E |x_1|^p &= \int_0^r \frac{n}{r^n} t^p (r - t)^{n-1} dt
+      \\
+      &= n r^p  \int_0^1 t^p (1 - t)^{n-1} dt
+      \\
+      &= r^p \frac{\Gamma(p + 1) \Gamma(n + 1)}{\Gamma(n + p + 1)}.
+    \end{align*}
+    To lower bound this, we will use the approximation of binomial coefficient, as
+    \[
+      r^p \binom{n+p}{p}^{-1} \ge r^p \left( \frac{(n + p)e}{p} \right)^{-p}
+    \]
+    so the $p$-th moment is bounded by $\frac{e r(n+p)}{p}$.
+    So, the subgaussian norm will be
+    \[
+      \|X\| = \sup_p \frac{e r (n + p)}{p \sqrt{p}}.
+    \]
+    For any $p$, by increasing $n$ arbitrarily large, we can set this subgaussian norm to increase. 
+    So, the subgaussian norm is not bounded.
+  \end{enumerate}
+\end{proof}
+
+\begin{customExercise}{10}
+  Show that the concentration inequality in Theorem 3.1.1 may not hold for a general isotropic sub-gaussian random vector $X$.
+  Thus, independence of the coordinates of $X$ is an essential requirement in that result.
+  In detail, show that there exist random vector with sub-gaussian coordinates that satisfy $\E X_i^2 = 1$, 
+  \[
+    \left\| \|X\|_2 - \sqrt{n} \right\|_{\psi_2} > C K^2
+  \]
+  where $K = \max_i \|X_i\|_{\psi_2}$.
+\end{customExercise}
+\begin{proof}
+  Consider the random vector with p.m.f. as
+  \begin{align*}
+    p(\mathbf{0}) &= 1 - p,
+    \\
+    p\left( \frac{1}{\sqrt{p}} \mathbf{1} \right) &= p.
+  \end{align*}
+  Then, $\|X\|_2 = X_1 \sqrt{n}$, so its sub-gaussian norm is exactly $\left\| \|X\|_2 - \sqrt{n} \right\|_{\psi_2} = \sqrt{n} \| X_1 - 1 \|_{\psi_2}$.
+
+  This is no more universal constant for varying $n$, so this can be disproved.
+\end{proof}
+
+\setcounter{subsection}{5}
+
+\begin{customExercise}{2}
+  \begin{enumerate}
+    \item Check that the assumption of Grothendieck's inequality can be equivalently stated as follows:
+    \[
+      \left| \sum_{i,j} a_{ij} x_i y_j \right| \le \max_i |x_i| \max_j |y_j|
+    \]
+    for any real numbers $x_i$ and $y_j$.
+    \item Show that the conclusion of Grothendieck's inequality can be equivalently stated as follows:
+    \[
+      \left| \sum_{i,j} a_{ij} \langle u_i, v_j \rangle \right| \le K \max_i \|u_i\| \max_j \|v_j\|
+    \]
+    for any Hilbert space $H$ and any vector $u_i, v_j \in H$.
+  \end{enumerate}
+\end{customExercise}
+\begin{proof}
+  \begin{enumerate}
+    \item The alternate statement proves original assumption, by only taking the numbers $x_i, y_j \in \{-1, 1\}$.
+    
+    For the converse, we will first show that the original assumption is equivalent to taking $x_i, y_j \in [-1, 1]$.
+    If we view each variable $x_i$ or $y_j$, their contribution to the summation is linear, hence if $|x_i| \neq 1$ or $|y_j| \neq 1$, we can increase the value by letting it to 1 or -1.
+    Repeating this to all the variables, we can set all variables to be in $\{-1, 1\}$, allowing us to use the assumption, and show it is bounded by 1.
+
+    Then the rest is simple, 
+    \begin{align*}
+      \left| \sum_{i,j} a_{ij} x_i y_j \right| 
+      &= \max_i |x_i| \max_j |y_j| \left| \sum_{i,j} a_{ij} \frac{x_i}{\max_i |x_i|} \frac{y_j}{\max_j |y_j|} \right| 
+      \\
+      &\le \max_i |x_i| \max_j |y_j|.
+    \end{align*}
+
+    \item Similarly, one side is simple, by only taking the vectors $u_i, v_j$ that are $\|u_i\| = \|v_j\| = 1$.
+    
+    For the converse, we can again extend the original statement to $\|u_i\|, \|v_j\| \le 1$.
+    This is enough since the inner product is linear, with the same approach as (a).
+    Then we have similar derivation
+    \begin{align*}
+      \left| \sum_{i,j} a_{ij} \langle u_i, v_j\rangle \right| 
+      &= \max_i \|u_i\| \max_j \|v_j\| \left| \sum_{i,j} a_{ij} \left\langle \frac{u_i}{\max_i \|u_i\|}, \frac{v_j}{\max_j \|v_j\|} \right\rangle \right|
+      \\
+      &\le K \max_i \|x_i\| \max_j \|y_j\|.
+    \end{align*}
+  \end{enumerate}
+\end{proof}
+
+\begin{customExercise}{3}
+  Deduce the following version of Grothendieck's inequality for symmetric $n \times n$ matrices $A = (a_{ij})$ with real entries. 
+  Assume that, for any numbers $x_i \in \{-1, 1\}$, we have 
+  \[
+    \left| \sum_{i,j} a_{ij} x_i x_j \right| \le 1.
+  \]
+  Then, for any Hilbert space $H$ and any vectors $u_i, v_j \in H$ satisfying $\|u_i\| = \|v_j\| = 1$, we have
+  \[
+    \left| \sum_{i,j} a_{ij} \langle u_i, v_j\rangle \right| \le 2K,
+  \]
+  where $K$ is the absolute constant from Grothendieck's inequality.
+\end{customExercise}
+\begin{proof}
+  If we write $u_i = (x_i + y_i) / 2$ and $v_i = (x_i - y_i) / 2$, then
+  \begin{align*}
+    \sum_{i,j} a_{ij} x_i y_j = \sum_{i,j} a_{ij} u_i u_j - \sum_{i,j} a_{ij} v_i v_j
+  \end{align*} 
+  so 
+  \begin{align*}
+    &\left| \sum_{i,j} a_{ij} x_i y_j \right|
+    \\
+    \le &\left| \sum_{i,j} a_{ij} u_i u_j \right| + \left| \sum_{i,j} a_{ij} v_i v_j \right|
+    \\
+    \le &2K.
+  \end{align*}
+\end{proof}
+
+\begin{customExercise}{5}
+  Show that the optimization
+  \[
+    \max \sum_{i,j=1}^n A_{ij} \langle X_i, X_j \rangle : \|X_i\|_2 = 1
+  \]
+  is equivalent to the following semidefinite program:
+  \[
+    \max \langle A, X \rangle: X \succeq 0, X_{ii} = 1.
+  \]
+\end{customExercise}
+\begin{proof}
+  $(1) \Rightarrow (2)$ : Let $X$ be the matrix, with $X_{ij} = \langle X_i, X_J \rangle$. 
+  Then the quantity is equal, and we satisfy the positive semidefinite condition, and the diagonals condition.
+
+  $(2) \Rightarrow (1)$ : Let $X_i$ be rows of square root of matrix $X$, which is possible due to $X \succeq 0$.
+  Then the quantity is again equal, and we satisfy the norm condition.
+\end{proof}
+
+\begin{customExercise}{7}
+  Let $A$ be an $m \times n$ matrix.
+  Consider the optimization problem
+  \[
+    \max \sum_{i,j} A_{ij} \langle X_i, Y_j \rangle : \|X_i\|_2 = \|Y_j\|_2 = 1
+  \]
+  over $X_i, Y_j \in \R^k$. Formulate this problem as a semidefinite program.
+\end{customExercise}
+\begin{proof}
+  Define the $(m +n) \times (m+n)$ matrix $M$, which is defined as four blocks
+  \[
+    M = \begin{pmatrix}
+      M^{(1,1)} & M^{(1,2)}
+      \\
+      M^{(2,1)} & M^{(2,2)}
+    \end{pmatrix}
+  \]
+  for $M^{(1,1)} \in \R^{m \times m}$, $M^{(1,2)} \in \R^{m \times n}$, $M^{(2,1)} \in \R^{n \times m}$, and $M^{(2,2)} \in \R^{n \times n}$.
+  Then each matrices are defined as
+  \begin{align*}
+    M_{ij}^{(1,1)} &= \langle X_i, X_j \rangle, & M_{ij}^{(1,2)} &= \langle X_i, Y_j \rangle,
+    \\
+    M_{ij}^{(2,1)} &= \langle Y_i, X_j \rangle, & M_{ij}^{(2,2)} &= \langle Y_i, Y_j \rangle.
+  \end{align*}
+  Then we can see that this matrix is positive semidefinite, and satisfy $M_{ii} = 1$.
+  Now, it is enough to set $A \in \R^{(m + n) \times (m + n)}$ by placing $A$ in the place where $M^{(1,2)}$ exists.
+\end{proof}
+
+\setcounter{subsection}{6}
+\begin{customExercise}{4}
+  For any $\epsilon > 0$, give an $(0.5 - \epsilon)$-approximation algorithm for maximum cut, which is always guaranteed to give a suitable cut but may have a random running time.
+  Give a bound on the expected running time.
+\end{customExercise}
+\begin{proof}
+  We need to find the cut $x$ that gives
+  \[
+    \mathrm{MAX-CUT}(G) \ge \mathrm{CUT}(G, x) \ge (0.5 - \epsilon) \mathrm{MAX-CUT}(G).
+  \]
+  Our algorithm is simple, we repeatedly sample $n$ cuts from $x \sim \mathrm{Unif}(\{-1, +1\}^n)$, and take the cut with maximum number.
+  By Proposition 3.6.3, it is enough to find some cut that satisfy
+  \[
+    \mathrm{CUT}(G, x) \ge (0.5 - \epsilon) |E| \ge (0.5 - \epsilon) \mathrm{MAX-CUT}(G).
+  \]
+  So, we repeatedly sample until the cut satisfying this appears.
+
+  Now to analyze the running time, we will use the fact that $\mathrm{CUT}(G, x)$, when viewed as random variable, is always contained in $[0, |E|]$, and hence $\frac{|E|^2}{4}$-subgaussian.
   
+  So, using the tail-probability of sub-gaussian random variable, we obtain
+  \[
+    P\left( \mathrm{CUT}(G, x) - \frac{|E|}{2} < -\epsilon |E| \right) \le \exp(- C \epsilon^2)
+  \]
+  for some constant $C$.
+  If we write the running time as $T$, 
+  \[
+    P(T \ge t + 1) = \left(P(\mathrm{CUT}(G, x_i) < (0.5 - \epsilon) |E|)\right)^t \le \exp(- C t \epsilon^2)
+  \]
+  and we can bounded the expected running time as
+  \begin{align*}
+    \E T &= \sum_{t=0}^\infty P(T \ge t + 1)
+    \\
+    &\le \sum_{t=0}^\infty \exp(- C t \epsilon^2)
+    \\
+    &= \frac{\exp(C \epsilon^2)}{\exp(C \epsilon^2) - 1}.
+  \end{align*}
+\end{proof}
+
+\begin{customExercise}{7}
+  Prove Grothendieck's identity, that for a random vector $g \sim \cN(0, I_n)$ and $u, v \in \mathbb{S}^{n-1}$, we have
+  \[
+    \E \left[ \mathrm{sign}(\langle g, u\rangle) \mathrm{sign}(\langle g, v\rangle) \right] = \frac{2}{\pi} \arcsin \langle u, v\rangle.
+  \]
+\end{customExercise}
+\begin{proof}
+  We can rewrite the expectation as
+  \begin{align*}
+    &\E \left[ \mathrm{sign}(\langle g, u\rangle) \mathrm{sign}(\langle g, v\rangle) \right]
+    \\
+    = & P\left( \langle g, u \rangle, \langle g, v\rangle > 0 \right) + P\left( \langle g, u \rangle, \langle g, v\rangle < 0 \right)
+    \\
+    - &P\left( \langle g, u \rangle < 0 < \langle g, v \rangle \right) - P\left( \langle g, v \rangle < 0 < \langle g, u \rangle \right)
+  \end{align*}
+  So, this is equivalent to finding the area of each events in $\mathbb{S}^{n-1}$.
+  
+  The first and second event has same area, which is 
+  \[
+    \frac{\pi - \arccos \langle u, v\rangle}{2\pi} \times \mathrm{Vol}(\mathbb{S}^{n-1})
+  \]
+  and the third and fourth event has the area of
+  \[
+    \frac{\arccos \langle u, v\rangle}{2\pi}  \times \mathrm{Vol}(\mathbb{S}^{n-1})
+  \]
+  so the overall term is equal to
+  \[
+    \frac{2\pi - 4 \arccos \langle u, v\rangle}{2\pi} = \frac{2 \arcsin\langle u, v\rangle}{\pi}.
+  \]
+\end{proof}
+
+\setcounter{subsection}{7}
+\begin{customExercise}{4}
+  Show that, for any vectors $u, v \in \R^n$ and $k \in \mathbb{N}$, we have
+  \[
+    \left\langle u^{\otimes k}, v^{\otimes k} \right\rangle = \langle u, v\rangle^k.
+  \]
+\end{customExercise}
+\begin{proof}
+  \begin{align*}
+    &\left\langle u^{\otimes k}, v^{\otimes k} \right\rangle
+    \\
+    = &\sum_{i_1, \ldots, i_k = 1}^n u_{i_1} \cdots u_{i_k} v_{i_1} \cdots v_{i_k}
+    \\
+    = &\sum_{i_1, \ldots, i_{k-1} = 1}^n u_{i_1} \cdots u_{i_{k-1}} v_{i_1} \cdots v_{i_{k-1}} \sum_{i_k=1}^n u_{i_k} v_{i_k}
+    \\
+    = &\sum_{i_1, \ldots, i_{k-1} = 1}^n u_{i_1} \cdots u_{i_{k-1}} v_{i_1} \cdots v_{i_{k-1}} \langle u, v\rangle
+    \\
+    \vdots &
+    \\
+    = &\langle u, v\rangle^k.
+  \end{align*}
+\end{proof}
+
+\begin{customExercise}{5}
+  \begin{enumerate}
+    \item Show that there exist a Hilbert space $H$ and a transformation $\Phi : \R^n \to H$ such that
+    \[
+      \langle \Phi(u), \Phi(v) \rangle = 2 \langle u, v \rangle^2 + 5 \langle u, v \rangle^3.
+    \]
+    \item More generally, consider a polynomial $f \in \R \to \R$ with non-negative coefficients and construct $H$ and $\Phi$ such that
+    \[
+      \langle \Phi(u), \Phi(v) \rangle = f(\langle u, v\rangle).
+    \]
+    \item Show the same for any real analytic function $f : \R \to \R$ with non-negative coefficients, i.e., for any function that can be presented as a convergence series,
+    \[
+      f(x) = \sum_{k=0}^\infty a_k x^k
+    \]
+    and such that $a_k \ge 0$ for all $k$.
+  \end{enumerate}
+\end{customExercise}
+\begin{proof}
+  \begin{enumerate}
+    \item Let $H = \R^{n^2 + n^3}$, with 
+    \[
+      \Phi(u) = \left( \sqrt{2} u^{\otimes 2}, \sqrt{5} u^{\otimes 3} \right) \in \R^{n^2 + n^3}.
+    \]
+    Then, 
+    \[
+      \langle \Phi(u), \Phi(v) \rangle = 2 \langle u^{\otimes 2}, v^{\otimes 2}\rangle + 5 \langle u^{\otimes 3}, v^{\otimes 3} \rangle = 2 \langle u, v\rangle^2 + 5 \langle u, v\rangle^3.
+    \]
+    \item We can do similar. For 
+    \[
+      f(x) = \sum_{i=0}^k a_i x^i
+    \]
+    we define $H = \R^{\sum_i=0^k n^i}$, and define $\Phi$ as
+    \[
+      \Phi(u) = \bigoplus_{i=0}^k \sqrt{a_i} u^{\otimes i}
+    \]
+    with $u^{\otimes 0} = 1$.
+    \item It is simple, we extend $H = \ell_2$, which is the sequence of real numbers that the sum of squares converges.
+    Then, we can define
+    \[
+      \Phi(u) = \bigoplus_{i=0}^\infty \sqrt{a_i} u^{\otimes i}
+    \]
+    which is contained in $H$, since $f$ is analytic.
+  \end{enumerate}
+\end{proof}
+
+\begin{customExercise}{6}
+  Let $f : \R \to \R$ be any real analytic function (with possibly negative coefficients in convergence series). Show that there exist a Hilbert space $H$ and transformations $\Phi, \Psi : \R^n \to H$ such that
+  \[
+    \langle \Phi(u), \Psi(v) \rangle = f(\langle u, v\rangle)
+  \]
+  Moreover, check that
+  \[
+    \|\Phi(u)\|^2 = \|\Psi(v)\|^2 = \sum_{k=0}^\infty |a_k| \|u\|_2^{2k}.
+  \]
+\end{customExercise}
+\begin{proof}
+  We use same $H$ as previous exercise, but now use
+  \begin{align*}
+    \Phi(u) &= \bigoplus_{i=0}^\infty \sqrt{|a_i|} u^{\otimes i},
+    \\
+    \Psi(u) &= \bigoplus_{i=0}^\infty \mathrm{sign}(a_i) \sqrt{|a_i|} u^{\otimes i}.
+  \end{align*}
+  This satisfy all assumptions.
 \end{proof}
 \end{document}
