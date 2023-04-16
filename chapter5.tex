@@ -1,0 +1,397 @@
+\documentclass[a4paper]{article}
+\usepackage{amsmath,amssymb,amsthm,tikz,hyperref,mathtools}
+\usepackage{bbm}
+
+\newtheorem{exercise}{Exercise}[subsection]
+
+\newcommand*{\E}{\mathbb{E}}
+\newcommand*{\R}{\mathbb{R}}
+\newcommand*{\cN}{\mathcal{N}}
+\newcommand*{\Var}{\mathrm{Var}}
+\newcommand*{\Cov}{\mathrm{Cov}}
+\newcommand*{\esssup}{\mathrm{ess}\,\sup}
+\newcommand*{\ind}[1]{\mathbbm{1}_{[{#1}]}}
+\newcommand*{\defeq}{\stackrel{\mathrm{def}}{=}}
+\newcommand*{\cP}{\mathcal{P}}
+\newcommand*{\cM}{\mathcal{M}}
+
+\renewcommand{\theenumi}{(\alph{enumi})}
+\makeatletter
+
+\newenvironment{customExercise}[1]
+ {\count@\c@exercise
+ \global\c@exercise#1 %
+   \global\advance\c@exercise\m@ne
+   \exercise}
+  {\endexercise
+  \global\c@exercise\count@}
+
+\title{Concentration Without Independence}
+\author{Taeyoung Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\setcounter{section}{5}
+\setcounter{subsection}{1}
+
+\begin{customExercise}{2}
+  Prove the following statements.
+  \begin{enumerate}
+    \item Every Lipschitz function is uniformly continuous.
+    \item Every differentiable function $f : \R^n \to \R$ with bounded derivative is Lipschitz, and
+    \[
+      \|f\|_{\mathrm{Lip}} \le \|\nabla f\|_\infty.
+    \]
+    \item Give an example of a non-Lipschitz but uniformly continuous function $f : [-1, 1] \to \R$.
+    \item Give an example of a non-differentiable but Lipschitz function $f : [-1, 1] \to \R$. 
+  \end{enumerate}
+\end{customExercise}
+\begin{proof}
+  \begin{enumerate}
+    \item If $f$ is $L$-Lipschitz, 
+    \[
+      d_X(x - x') \le \frac{\epsilon}{L} \Rightarrow d_Y(f(x) - f(x')) \le L d_X(x - x') = \epsilon.
+    \]
+    \item This can be shown by fundamental theorem of calculus.
+    \begin{align*}
+      |f(x) - f(x')| &= \left| \int_0^1 \left\langle \nabla f(x' + (x - x')t), x - x'\right\rangle dt \right|
+      \\
+      &\le \int_0^1 \|\nabla f(x' + (x - x')t)\| \|x-x'\| dt
+      \\
+      &\le L \|x - x'\|.
+    \end{align*}
+  \end{enumerate}
+  \item Let's take $f(x) = \sqrt{|x|}$.
+  Then
+  \begin{align*}
+    |f(x) - f(y)| \le |f(x-y)| \le \sqrt{|x-y|}
+  \end{align*}
+  so it is uniformly continuous.
+  However simultaneously
+  \[
+    \frac{|f(x) - f(0)|}{|x-0|} = \frac{\sqrt{|x|}}{|x|} \to \infty
+  \]
+  as $x \to \infty$, so this function is not Lipschitz.
+  \item $f(x) = |x|$ is 1-Lipschitz but not differentiable at $x=0$.
+\end{proof}
+
+\begin{customExercise}{2}
+  Prove the following statements.
+  \begin{enumerate}
+    \item For a fixed $\theta \in \R^n$, the linear functional 
+    \[
+      f(x) = \langle x, \theta\rangle
+    \]
+    is a Lipschitz function on $\R^n$, and $\|f\|_{Lip} = \|\theta\|_2$.
+    \item More generally, an $m \times n$ matrix $A$ acting as a linear operator 
+    \[
+      A : (\R^n, \|\cdot\|_2) \to (\R^m, \|\cdot\|_2)
+    \]
+    is Lipschitz, and $\|A\|_{Lip} = \|A\|$.
+    \item Any norm $f(x) = \|x\|$ on $(\R^n, \|\cdot\|_2)$ is a Lipschitz function. The Lipschitz norm of $f$ is the smallest $L$ that satisfies 
+    \[
+      \|x\| \le L \|x\|_2
+    \]
+    for all $x \in \R^n$.
+  \end{enumerate}
+\end{customExercise}
+\begin{proof}
+  \begin{enumerate}
+    \item 
+    \begin{align*}
+      \left| f(x) - f(y) \right| &= |\langle x, \theta \rangle - \langle y, \theta \rangle|
+      \\
+      &= |\langle x - y, \theta \rangle|
+      \\
+      &\le \|x-y\| \|\theta\|
+    \end{align*}
+    and the exactness of this bound is obtained by
+    \[
+      \frac{\|f(\theta) - f(0)\|}{\|\theta - 0\|} = \frac{\|\theta\|^2}{\|\theta\|} = \|\theta\|.
+    \]
+    \item 
+    \begin{align*}
+      \left\| Ax - Ay \right\| &= \| A(x-y) \|
+      \\
+      &\le \|A\| \|x-y\|
+    \end{align*}
+    and the maximum is attained at between $y = \mathrm{argmax}_{\|x\|=1} \|Ax\|$ and 0.
+    \item
+    \begin{align*}
+      \|x-y\| &\le \|x-y\|_2 \|e\|
+      \\
+      &\le L \|x-y\|_2
+    \end{align*}
+    where $e$ is the unit vector.
+  \end{enumerate}
+\end{proof}
+
+\begin{customExercise}{8}
+  Show that 
+  \[
+    H_t \supset \left\{ x \in \sqrt{n} S^{n-1} : x_1 \le t / \sqrt{2} \right\}.
+  \]
+\end{customExercise}
+\begin{proof}
+  Let $y \in H$ as
+  \[
+    y = \frac{\sqrt{n} z}{\|z\|}, z = \prod_{2:n} x
+  \]
+  where $\prod_{2:d}$ is a projection operator that removes only first coordinate.
+  
+  We can consider the circle that is orthogonal to circle $\{x : x_1 = 0\}$ that passes given two points, which forms following figure.
+  \begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+      \draw (0, 0) circle (2cm);
+      \draw[fill=black] (-2, 0) circle (1pt) node [left] {y};
+      \draw[fill=black] (-1.6, 1.2) circle (1pt) node [left] {x};
+      \draw[fill=black] (-1.6, 0) circle (1pt) node [left] {z};
+      \draw[] (-2,0) -- (-1.6, 0) {};
+      \draw[] (-1.6, 0) -- (-1.6, 1.2) node [midway,right] {$x_1$};
+    \end{tikzpicture}
+    \caption{Example figure for Exercise 5.1.8.}
+  \end{figure}
+  What we can see here is that horizontal line will be always shorter or equal to vertical line.
+  So
+  \[
+    \|x - y\|^2 = x_1^2 + \|y-z\|^2 \le 2 x_1^2 = t^2
+  \]
+  so we can show that any element of given set is contained in $H_t$.
+\end{proof}
+
+\begin{customExercise}{9}
+  Let $A$ be a subset of the sphere $\sqrt{n} S^{n-1}$ such that 
+  \[
+    \sigma(A) \ge 2 \exp(-cs^2) \text{ for some } s > 0.
+  \]
+  \begin{enumerate}
+    \item Prove that $\sigma(A_s) > 1/2$.
+    \item Deduce from this that, for any $t \ge s$,
+    \[
+      \sigma(A_{2t}) \ge 1 - \exp(-ct^2)
+    \]
+    where $c > 0$ is the absolute constant from Lemma 5.1.7.
+  \end{enumerate}
+\end{customExercise}
+\begin{proof}
+  \begin{enumerate}
+    \item Consider the complement $S^{n-1} \setminus A_s$. Suppose that this set satisfy 
+    \[
+      \sigma(S^{n-1} \setminus A_s) \ge 1/2,
+    \]
+    then by Lemma 5.1.7, the $s$-neighborhood satisfy
+    \[
+      \sigma\left((S^{n-1} \setminus A_s)_s\right) \ge 1 - 2 \exp(- c t^2).
+    \]
+    Now, we will show that this neighborhood is disjoint to given set $A$.
+    Assume that $x \in A \cap (S^{n-1} \setminus A_s)_s$, then 
+    \begin{align*}
+      x \in (S^{n-1} \setminus A_s)_s &\Leftrightarrow \exists y \in S^{n-1} \setminus A_s, \|x - y\|_s
+    \end{align*}
+    but since $x \in A$, this implies that $y \in A_s$, so this is contradiction.
+
+    Now since these are disjoint, we have
+    \[
+      1 = \sigma(S^{n-1}) \ge \sigma(A) + \sigma((S^{n-1} \setminus A_s)_s) > 2\exp(-cs^2) + 1 - 2\exp(-cs^2) = 1
+    \]
+    so is constradiction, which implies that $\sigma(S^{n-1} \setminus A_s) < 1/2$, and $\sigma(A_s) \ge 1/2$.
+    \item By (a), we have shown $\sigma(A_s) \ge 1/2$.
+    Then applying Lemma 5.1.7 to $A_s$, which results $A_{2s}$, satisfies
+    \[
+      \sigma(A_{2s}) \ge 1 - 2 \exp(-cs^2).
+    \]
+  \end{enumerate}
+\end{proof}
+
+\begin{customExercise}{11}
+  We provided Theorem 5.1.4 for functions $f$ that are Lipschitz with respect to the Euclidean metric $\|x-y\|_2$ on the sphere. Argue that the same result holds for the geodesic metric, which is the length of the shortest arc connecting $x$ and $y$.
+\end{customExercise}
+\begin{proof}
+  This is immediate from showing that two distances are linearly bounded, i.e., 
+  \[
+    \|x - y\|_2 \le \|x - y\|_{G} \le \frac{\pi}{2} \|x-y\|_2.
+  \]
+  And this can be solved by considering the angle, 
+  \begin{align*}
+    \|x-y\|_G &= \sqrt{n} \theta,
+    \\
+    \|x-y\|_2 &= 2 \sqrt{n} \sin(\theta / 2)
+  \end{align*}
+  First inequality can be shown by Taylor expansion up to first degree, or is immediate from the definition, straight line is always shorter than arc.
+  Second inequality can be shown using that second function at $\theta \in [0, \pi]$, is concave, so is obtained by taking $\theta = \pi$.
+
+  This shows that the change of metric only affects the Lipschitz constant by constant multiplication, so only changes the constant appearing in the theorem.
+\end{proof}
+
+\begin{customExercise}{12}
+  We stated Theorem 5.1.4 for the scaled sphere $\sqrt{n} S^{n-1}$. 
+  Deduce that a Lipschitz function $f$ on the unit sphere $S^{n-1}$ satisfies
+  \[
+    \|f(X) - \E f(X)\|_{\psi_2} \le \frac{C \|f\|_{Lip}}{\sqrt{n}}.
+  \] 
+\end{customExercise}
+\begin{proof}
+  We define $f' : \sqrt{n} S^{n-1} \to \R$ as
+  \[
+    f'(x) = f \left(\frac{x}{\sqrt{n}}\right)
+  \]
+  then we have $\|f'\|_{Lip} = \frac{\|f\|}{\sqrt{n}}$.
+  Applying the Theorem 5.1.4 to $f'$ shows that
+  \[
+    \|f(X) - \E f(X)\|_{\psi_2} = \|f'(\sqrt{n}X) - \E f'(\sqrt{n} X)\|_{\psi_2} \le C \|f'\|_{Lip} = \frac{C \|f\|_{Lip}}{\sqrt{n}}.
+  \]
+\end{proof}
+
+\begin{customExercise}{13}
+  Consider a random variable $Z$ with median M. 
+  Show that
+  \[
+    c \|Z - \E Z\|_{\psi_2} \le \|Z-M\|_{\psi_2} \le C \|Z-\E Z\|_{\psi_2},
+  \]
+  where $c, C > 0$ are some absolute constants. 
+\end{customExercise}
+\begin{proof}
+  The first inequality is immediate by Lemma 2.6.8, with $c = 1/C$ with $C$ in the statement of Lemma 2.6.8.
+  Now from the first property of sub-gaussian random variable, 
+  \[
+    0.5 = P(|X - \E X| \ge |M - \E X|) \le \exp \left( - \frac{C (M - \E X)^2}{\|X - \E X\|_{\psi_2}^2} \right)
+  \]
+  which gives, upon rewriting,
+  \[
+    |M- \E X|^2 \le \frac{\|X - \E X\|_{\psi_2}^2\log 2}{C_2}
+  \]
+  with $C_2$ the multiplicative coefficient of deriving $K_1$ from $K_4$ in Proposition 2.5.2.
+
+  Now we can apply this inequality, in similar manner of proof of Lemma 2.6.8, as
+  \begin{align*}
+    \|X - M\|_{\psi_2} &\le \|X - \E X\|_{\psi_2} + \|\E X - M\|_{\psi_2}
+    \\
+    &\le \|X - \E X\|_{\psi_2} + C_1 |\E Z - M|
+    \\
+    &\le \|X - \E X\|_{\psi_2} + \frac{C_1 \sqrt{\log 2}\|X - \E X\|}{\sqrt{C_2}}.
+  \end{align*}
+\end{proof}
+
+\begin{customExercise}{14}
+  Consider a random vector $X$ taking values in some metric space $(T, d)$.
+  Assume that there exists a $K > 0$ such that 
+  \[
+    \|f(X) - \E f(X)\|_{\psi_2} \le K \|f\|_{Lip}
+  \]
+  for every Lipschitz function $f : T \to \R$.
+  For a subset $A \subset T$, define $\sigma(A) \coloneqq P(X \in A)$.
+
+  Show that if $\sigma(A) \ge 1/2$ then, for every $t \ge 0$,
+  \[
+    \sigma(A_t) \ge 1 - \exp(-ct^2 / K^2),
+  \]
+  where $c > 0$ is an absolute constant.
+\end{customExercise}
+\begin{proof}
+  Let's consider a function $f_x : T \to \R$
+  \[
+    f_x(x') = d(x - x')
+  \]
+  then this function is 1-Lipschitz, since by the triangle inequality,
+  \[
+    |f_x(x_1) - f_x(x_2)| = |d(x_1, x) - d(x, x_2)| \le d(x_1, x_2).
+  \]
+  Now we will use some nontrivial fact, that the infimum of $L$-Lipschitz functions, if $L$ is shared, is also $L$-Lipschitz, hence
+  \[
+    f(y) \coloneqq \inf_{x \in A} f_x(y)
+  \]
+  is 1-Lipschitz.
+
+  Then,
+  \begin{align*}
+    f(X) > t \Leftrightarrow X \notin A_t,
+  \end{align*}
+  hence
+  \begin{align*}
+    \sigma(A_t) &= P\left( X \in A_t \right)
+    \\
+    &= P(f(X) \le t)
+    \\
+    &= P(f(X) - \E f(X) \le t - \E f(X))
+    \\
+    &\ge 1 - \exp\left( - \frac{(t - \E f(X))^2}{K^2} \right)
+    \\
+    &\stackrel{?}{\ge} 1 - 2 \exp \left( - \frac{t^2}{C K^2} \right)
+  \end{align*}
+  where we need to find suitable $C > 1$, that does not depend $K$.
+
+  We can rewrite the last inequality as
+  \[
+    \left(\frac{1}{C} - 1\right) t^2 + 2 \E f(X) t - (\E f(X))^2 - K^2 \log 2 \ge 0
+  \] 
+  for $t \ge 0$.
+  Considering the discriminant of this quadratic equation (w.r.t. $t$), it is enough to set
+  \[
+    (\E f(X))^2 - CK^2 \log 2 + K^2 \log 2 \le 0
+  \]
+  So, we need 
+  \[
+    C \ge 1 + \frac{(\E f(X))^2}{K^2 \log 2}.
+  \]
+  Finally to show that this lower bound is independent to choice of $f$, by (ii) of Proposition 2.5.2, we obtain
+  \[
+    \E f(X) = \E |f(X)| \le C_3 K
+  \]
+  where $C_3$ is a multiplicative constant from given $K$ to $K_2$ in Proposition.
+  Using this, it is enough to set
+  \[
+    C = 1 + \frac{C_3^2}{\log 2} \ge 1 + \frac{(\E f(X))^2}{K^2 \log 2}.
+  \]
+\end{proof}
+
+\begin{customExercise}{15}
+  From linear algebra, we know that any set of orthonormal vectors in $\R^n$ mush contain at most $n$ vectors. 
+  However, if we allow the vectors to be almost orthogonal, there can be exponentially many of them!
+
+  Prove this counterintuitive fact as follows.
+  Fix $\epsilon \in (0, 1)$.
+  Show that there exists a set $\{x_1, \ldots, x_N\}$ of unit vectors in $\R^n$ which are mutually almost orthogonal, 
+  \[
+    \left| \left\langle x_i, x_j \right\rangle \right| \le \epsilon \quad \text{ for all } i \neq j,
+  \]
+  and that the set is exponentially large in $n$:
+  \[
+    N \ge \exp(c(\epsilon) n).
+  \]
+\end{customExercise}
+\begin{proof}
+  For some unit vector $x$, consider the two sets,
+  \[
+    \{y \in S^{n-1} : \langle x, y \rangle > \epsilon\},\qquad \{y \in S^{n-1} : \langle x, y \rangle < -\epsilon\}.
+  \]
+  We will show that these two sets are exponentially small, so to cover the total sphere, we need exponentially many points.
+  
+  Since these two sets have same portion, let's focus on the first set.
+  We can see that
+  \[
+    S^{n-1} \setminus \{y \in S^{n-1} : \langle x, y \rangle > \epsilon\} = H_{(1 - \sin \theta)^2 + \cos^2 \theta}
+  \]
+  where $H_t$ is the $t$-neighborhood of hemisphere centered at $-x$ and $\cos \theta = \epsilon$.
+  
+  So, we can bound the portion as
+  \begin{align*}
+    \sigma(\{y \in S^{n-1} : \langle x, y \rangle > \epsilon\}) &= 1 - \sigma(H_{(1 - \sin \theta)^2 + \cos^2 \theta})
+    \\
+    &\le 1 - \sigma (H_{\epsilon^2})
+    \\
+    &\le 2 \exp \left( - c \epsilon^4 n \right)
+  \end{align*}
+  by Lemma 5.1.7, but adjusted for $S^{n-1}$.
+  
+  So, single point can cover at most $4 \exp(- c \epsilon^4 n)$, which means we need
+  \[
+    \frac{\exp(c \epsilon^4 n)}{4}
+  \]
+  points.
+\end{proof}
+
+\setcounter{subsection}{2}
+\end{document}
