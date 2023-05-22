@@ -394,4 +394,48 @@
 \end{proof}
 
 \setcounter{subsection}{2}
+
+\begin{customExercise}{3}
+  Deduce the Gaussian concentration inequality (Theorem 5.2.2) from the Gaussian isoperimetric inequality.
+\end{customExercise}
+\begin{proof}
+  Without loss of generality, let's assume that $\|f\|_{Lip} = 1$.
+  Let's define the median $M$ of $f(X)$ as
+  \[
+    P(f(X) \le M) = P(f(X) > M) = 1/2,
+  \]
+  which uniquely exists by continuity of $f$.
+
+  Let's define the event
+  \[
+    A = \left\{x \in \R^n : f(x) \le M \right\}
+  \]
+  which has probability $P(A) \ge 1/2$.
+
+  By Gaussian isoperimetric inequality, we have
+  \[
+    P(A_t) \ge P(X_1 \le t) = \int_{-\infty}^t \frac{1}{\sqrt{2\pi}} \exp\left( - \frac{x^2}{2} \right) dx
+  \]
+  and the Lipschitz-continuity of $f$ implies that
+  \[
+    P(f(X) \le M + t) \ge P(A_t)
+  \]
+  hence
+  \[
+    P(f(X) \ge M + t) \le P(Z \ge t)
+  \]
+  for $Z \sim \cN(0, 1)$, which implies that $f(X) - M$ is $C$-subgaussian.
+
+  Then we can apply the centering lemma to show that $f(X) - \E f(X)$ is also sub-gaussian.
+\end{proof}
+
+\begin{customExercise}{4}
+  Prove that in the concentration results for the sphere and for Gaussian space, the expectation $\E f(X)$ can be replaced by the $L^p$ norm $(\E f^p)^{1/p}$ for any $p > 0$ and for any non-negative function $f$. The constants may depend on $p$.
+\end{customExercise}
+\begin{proof}
+  By Theorem 5.2.2, $f(X)$ is sub-gaussian, where we can use similar analogy of centering lemma, as
+  \begin{align*}
+    \|f(X) - \|f\|_p \|_{\psi_2} &\le 
+  \end{align*}
+\end{proof}
 \end{document}
