@@ -487,11 +487,36 @@
   
   It is enough to show that this mapping has bounded Lipschitz norm.
   \begin{align*}
-    \|\phi(z) - \phi(z')\|_2 &= \|z \Phi(\|z\|_2) - z' \Phi(\|z'\|_2)\|_2
+    \phi'(z)_{i,j} &= \delta_{i,j} \Phi(\|z\|_2) + z_j \Phi'(\|z\|_2) \frac{z_i}{\|z\|_2}
     \\
-    &\le \|z - z'\|_2 \Phi(\|z\|_2) + \|z'\|_2 |\Phi(\|z\|_2) - \Phi(\|z'\|_2)|
+    \phi'(z) &= \Phi(\|z\|_2) I_n + \frac{\Phi'(\|z\|_2)}{\|z\|_2} z z^T
     \\
-    &\le \sqrt{n} \|z - z'\|_2 + \|z'\|_2 |\Phi(\|z\|_2) - \Phi(\|z'\|_2)|
+    \left\|\phi'(z)\right\|_2 &\le \Phi(\|z\|_2) + \Phi'(\|z\|_2) \|z\|_2
+    \\
+    &\le \sqrt{n} + \Phi'(\|z\|_2) \|z\|_2.
   \end{align*}
+  To bound the second term, we note that
+  \begin{align*}
+    |\Phi'(t) t| &= \left|\frac{1}{2^{n/2 - 1} \Gamma(n/2)} t^{n} \exp(-t^2/2) \cdot \frac{\Phi_1(t)^{1/n-1}}{\sqrt{n}} \right|
+    \\
+    &\le \frac{n^{n/2} \exp(-n / 2)}{2^{n/2 - 1} \Gamma(n/2)}\cdot \frac{\Phi_1(t)^{1/n-1}}{\sqrt{n}}
+  \end{align*}
+  TODO.
+
 \end{proof}
+
+\setcounter{subsection}{3}
+
+\begin{customExercise}{3}
+  Let $A$ be an $m \times n$ random matrix whose rows are independent mean-zero sub-gaussian isotropic random vectors in $\R^n$. 
+  Show that the conclusion of the Johnson-Lindenstrauss lemma holds for $Q = (1 / \sqrt{m})A$. 
+\end{customExercise}
+\begin{proof}
+  
+\end{proof}
+
+\begin{customExercise}{4}
+  Give an example of a set $X$ of $N$ points for which no scaled projection onto a subspace of dimension $m \ll \log N$ is an approximate isometry.
+\end{customExercise}
+
 \end{document}
